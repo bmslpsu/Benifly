@@ -8,7 +8,6 @@ class MsgFlyState:
         self.right          = []
         self.aux            = []
 
-
 class MsgState:
     def __init__(self):
         self.angles         = []

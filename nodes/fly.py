@@ -1,7 +1,8 @@
 #!/usr/bin/env python
-#import rospy
+
 import cv2
 import numpy as np
+
 from imagewindow import ImageWindow
 from tracker_axis import AxisTracker
 from tracker_area import AreaTracker
@@ -11,8 +12,6 @@ from tracker_intensity import IntensityTracker
 import ui
 import imageprocessing
 
-#from std_msgs.msg import , Header
-#from Kinefly.msg import MsgFlystate, MsgState
 from MsgFlyState import MsgFlyState, MsgState , Header
 
 
@@ -96,11 +95,7 @@ class Fly(object):
         self.stampPrev = None
         self.stampPrevAlt = None
 
-        #self.stamp = rospy.Time(0)
         self.stamp = 0
-
-        #self.pubFlystate = rospy.Publisher(self.nodename+'/flystate', MsgFlystate, queue_size=100)
-
 
     def set_params(self, params):
         self.params = params

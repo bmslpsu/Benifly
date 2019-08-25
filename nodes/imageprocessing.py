@@ -462,7 +462,3 @@ class WindowFunctions(object):
         return wfn
 
 # End class WindowFunctions
-
-
-    
-

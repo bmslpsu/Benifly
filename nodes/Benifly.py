@@ -15,7 +15,9 @@ from MsgFlyState import Header
 import imageprocessing
 from fileimport import FileImport
 import pickle
-
+import time
+import datetime
+import csv
 
 ###############################################################################
 ###############################################################################
@@ -29,10 +31,8 @@ class MainWindow:
         self.lockParams = threading.Lock()
         self.lockBuffer = threading.Lock()
 
-        # initialize
-        # rospy.init_node('kinefly')
-        # self.nodename = rospy.get_name().rstrip('/')
-        self.nodename = 'kinefly'
+        # Initialize
+        self.nodename = 'Benifly'
 
         # initialize display
         self.window_name = self.nodename.strip('/')
@@ -462,12 +462,10 @@ class MainWindow:
                 self.iImgWorking = (self.iImgWorking + 1) % len(self.bufferImages)
 
         # Compute processing times.
-        # self.stampROS        = rospy.Time.now()
-        self.stampROS       = 0
+        self.stampROS       = time.time()
         self.stampROSDiff   = (self.stampROS - self.stampROSPrev)
         self.stampROSPrev   = self.stampROS
-        # self.dtROS           = max(0, self.stampROSDiff.to_sec())
-        self.dtROS          = 1
+        self.dtROS          = max(0, self.stampROSDiff)
 
         # If time wrapped, then just assume a value.
         if (self.dtROS == 0.0):
@@ -667,16 +665,14 @@ class MainWindow:
                 # rosimgOutput.encoding = 'bgr8'
                 # self.pubImage.publish(rosimgOutput)
 
+                self.imgOutput = imgOutput
+
                 self.buttons[
                     self.ibtnInvertColor].state = self.fly.bInvertColor  # Set the button state to reflect the fly's bInvertColor flag.
                 self.draw_buttons(imgOutput)
 
                 # Display the image.
                 cv2.imshow(self.window_name, imgOutput)
-
-        #         else:
-        #             if (self.hzROSF != 0.0):
-        #                 rospy.sleep(1/self.hzROSF) # Pretend we spent time processing.
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             sys.exit()
@@ -1113,12 +1109,10 @@ class MainWindow:
     # End onMouse()
 
     def start(self):
-        # self.t0 = rospy.Time.now().to_sec()
-        self.t0 = 1
+        self.t0 = time.time()
 
     def stop(self):
-        # self.t1 = rospy.Time.now().to_sec()
-        self.t1 = 1
+        self.t1 = time.time()
 
     def runLive(self):
         if (self.params['gui']['aux']['track']):
@@ -1132,45 +1126,81 @@ class MainWindow:
             self.image_callback(gray)
             self.process_image()
 
+    def loopVid(self, root, file, vidname,):
+        self.vidfile = FileImport()
+        self.vidfile.get_matdata(root, file, vidname, '')
 
-    def runVid(self,root,filespec,vidname,targetdir):
-        self.vidfiles = FileImport()
-        self.vidfiles.get_files(root, filespec)
+        while True:
+            for frame in range(self.vidfile.n_frame):
+                #print(frame)
+                data = self.vidfile.vid[frame,:,:].T
+                self.image_callback(data)
+                self.process_image()
+                #print(self.fly.head.state.angles[0])
 
-        for fname in self.vidfiles.files:
-            path = os.path.join(self.vidfiles.root, fname)
-            self.vidfiles.get_matdata(path, 'vidData')
+    def runVid(self, root, file, vidname, targetdir):
+        self.vidfile = FileImport()
+        self.vidfile.get_matdata(root, file, vidname, targetdir)
 
-            while(True):
-                for frame in range(self.vidfiles.vid.shape[0]):
-                    print(frame)
-                    data = self.vidfiles.vid[frame,:,:].T
-                    #data = np.rot90(data)
+        header = "Left , Right , Head , Abdomen"
+        with open(self.vidfile.targetpath, 'wb') as f:
+            fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+            vidout = cv2.VideoWriter(targetdir + '\Benifly.avi', fourcc, 60, (self.vidfile.width, self.vidfile.height))
+            np.savetxt(f, [], header=header)
+            for frame in range(self.vidfile.n_frame):
+                #print(frame)
+                data = self.vidfile.vid[frame,:,:].T
 
-                    #gray = cv2.cvtColor(data, cv2.COLOR_BGR2GRAY)
-                    self.image_callback(data)
-                    self.process_image()
+                self.image_callback(data)
+                self.process_image()
 
-                    #cv2.imshow('TEST',data)
-                    #cv2.waitKey(1)
+                state = np.empty((1,4))
+                state[:] = np.nan
 
+                try:
+                    state[0,0] = self.fly.left.state.angles[0]
+                    #print(self.fly.head.state.angles[0])
+                except IndexError:
+                    pass
+
+                try:
+                    state[0,1] = self.fly.right.state.angles[0]
+                except IndexError:
+                    pass
+
+                try:
+                    state[0,2] = self.fly.head.state.angles[0]
+                except IndexError:
+                    pass
+
+                try:
+                    state[0,3] = self.fly.abdomen.state.angles[0]
+                except IndexError:
+                    pass
+
+                np.savetxt(f, state)
+
+                vidout.write(self.imgOutput)
+
+            f.close()
+            vidout.release()
 
 
 if __name__ == '__main__':
     main = MainWindow()
 
-    #main.runLive()
-
     print('')
     print('**************************************************************************')
-    print('     Kinefly: Camera-based Tethered Insect Kinematics Analyzer for ROS')
-    print('         by Steve Safarik, Floris van Breugel (c) 2014')
+    print('          Benifly: Tethered Insect Kinematics Analyzer')
+    print('                     by Ben Cellini, 2019')
     print('**************************************************************************')
     print('')
 
     root = 'Q:\Box Sync'
-    filespec = 'fly_1_trial_2*.mat'
+    file = 'fly_1_trial_2_SOS.mat'
     targetdir = 'Q:\Box Sync'
     vidname = 'vidData'
 
-    main.runVid(root, filespec, vidname, targetdir)
+    #main.runLive()
+    #main.loopVid(root, file, vidname)
+    main.runVid(root, file, vidname, targetdir)
