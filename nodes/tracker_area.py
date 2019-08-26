@@ -7,7 +7,7 @@ from imagewindow import ImageWindow
 import imageprocessing
 from bodypart_motion import  MotionTrackedBodypartPolar
 
-from MsgFlyState import MsgFlyState, MsgState
+from MsgFlyState import  MsgState
 
 
 
@@ -87,7 +87,8 @@ class AreaTracker(MotionTrackedBodypartPolar):
     #
     def update_state(self):
         imgNow = self.imgRoiFgMaskedPolarCroppedWindowed
-
+        #cv2.imshow('DEBUG',imgNow)
+        #cv2.waitKey(1)
         
         if (imgNow is not None):
             # Get the rotation & expansion between images.

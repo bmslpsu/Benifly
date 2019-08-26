@@ -28,8 +28,8 @@ from MsgFlyState import Header
 # This is the main Benifly window, where we receive images from the camera/file,
 # process them using the Fly class, and then output the results.
 #
-class MainWindow:
-    def __init__(self):
+class MainWindow():
+    def __init__(self, mainroot):
         print('')
         print('**************************************************************************')
         print('          Benifly: Tethered Insect Kinematics Analyzer')
@@ -37,6 +37,7 @@ class MainWindow:
         print('**************************************************************************')
         print('')
 
+        self.mainroot = mainroot
         self.lockParams = threading.Lock()
         self.lockBuffer = threading.Lock()
 
@@ -58,9 +59,9 @@ class MainWindow:
                     'wingbeat_min': 180,  # Bounds for wingbeat frequency measurement.
                     'wingbeat_max': 220,
                     'head': {'tracker': 'tip',
-                             'autozero': False,  # Automatically figure out where is the center of motion.
+                             'autozero': True,  # Automatically figure out where is the center of motion.
                              'threshold': 0.0,
-                             'feathering': 0.0,  # How much to feather the edge pixels for motion tracking by area.
+                             'feathering': 0.25,  # How much to feather the edge pixels for motion tracking by area.
                              'saturation_correction': False},
                     'abdomen': {'tracker': 'tip',
                                 'autozero': True,
@@ -88,7 +89,7 @@ class MainWindow:
                                              'y': 150}},
                             'head': {'track': False,  # To track, or not to track.
                                      'subtract_bg': False,  # Use background subtraction?
-                                     'stabilize': True,  # Image stabilization of the bodypart.
+                                     'stabilize': False,  # Image stabilization of the bodypart.
                                      'hinge': {'x': 175,  # Hinge position in image coordinates.
                                                'y': 40},
                                      'radius_outer': 20,  # Outer radius in pixel units.
@@ -133,7 +134,7 @@ class MainWindow:
                     }
 
         try:
-            self.params = pickle.load(open("C:\Users\BC\PycharmProjects\Benifly\params.p", "rb"))
+            self.params = pickle.load(open(self.mainroot + "\params.p", "rb"))
             print('Loading Benifly paramters from file ...')
         except IOError:
             print('No saved paramters file ... using defaults')
@@ -692,8 +693,8 @@ class MainWindow:
     # Save the current camera image as the background.
     #
     def save_background(self):
-        # rospy.logwarn ('Saving new background image %s' % self.filenameBackground)
-        cv2.imwrite(self.filenameBackground, self.imgUnscaled)
+        print('Saving new background image %s' % self.filenameBackground)
+        cv2.imwrite(self.mainroot + '/' + 'Benifly.png', self.imgUnscaled)
         self.fly.set_background(self.imgScaled)
         self.bHaveBackground = True
 
@@ -1024,7 +1025,8 @@ class MainWindow:
             # If the mouse is on the same button at mouseup, then do the action.
             if (self.uiSelected == 'pushbutton'):
                 if (self.nameSelected == self.nameSelectedNow == 'save_bg'):
-                    self.pubCommand.publish('save_background')
+                    #self.pubCommand.publish('save_background')
+                    self.save_background()
 
                 elif (self.nameSelected == self.nameSelectedNow == 'exit'):
                     sys.exit()
@@ -1105,7 +1107,7 @@ class MainWindow:
                 self.fly.create_masks(self.shapeImage)
 
             with self.lockParams:
-                pickle.dump(self.params, open( "C:\Users\BC\PycharmProjects\Benifly\params.p", "wb" ) )
+                pickle.dump(self.params, open( self.mainroot + "\params.p", "wb" ) )
 
             self.bMousing = False
             self.nameSelected = None
@@ -1123,19 +1125,34 @@ class MainWindow:
     def stop(self):
         self.t1 = time.time()
 
-    def runLive(self):
-        if (self.params['gui']['aux']['track']):
-            self.fly.aux.wingbeat.warn()
-
+    def loopLive(self):
         cap = cv2.VideoCapture(0)
-
         while (True):
             ret, frame = cap.read()
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             self.image_callback(gray)
             self.process_image()
 
-    def loopVid(self, root, file, vidname,):
+    def loopVid(self, root, file,):
+        while (True):
+            cap = cv2.VideoCapture(root + '/' + file)
+            iCount = 1
+            while (cap.isOpened()):
+                ret, frame = cap.read()
+                if ret:
+                    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                    self.image_callback(gray)
+                    self.process_image()
+                else:
+                    break
+
+                iCount+=1
+                print(iCount)
+
+            cap.release()
+            cv2.destroyAllWindows()
+
+    def loopMat(self, root, file, vidname,):
         self.vidfile = FileImport()
         self.vidfile.get_matdata(root, file, vidname, '')
 
@@ -1147,7 +1164,7 @@ class MainWindow:
                 self.process_image()
                 #print(self.fly.head.state.angles[0])
 
-    def runVid(self, root, file, vidname, targetdir):
+    def runMat(self, root, file, vidname, targetdir):
         self.vidfile = FileImport()
         self.vidfile.get_matdata(root, file, vidname, targetdir)
 
@@ -1198,13 +1215,16 @@ class MainWindow:
             print('Tracking Complete')
 
 
-#if __name__ == '__main__':
-    #main = MainWindow()
+if __name__ == '__main__':
+    mainroot = "C:\Users\BC\PycharmProjects\Benifly"
 
-    #root = 'Q:\Box Sync'
-    #file = 'fly_1_trial_2_SOS.mat'
-    ##vidname = 'vidData'
+    main = MainWindow(mainroot)
 
-    #main.runLive()
-    #main.loopVid(root, file, vidname)
-    #main.runVid(root, file, vidname, targetdir)
+    root = 'Q:/temp'
+    file = 'fly_1_trial_1_SOS.mat'
+    vidname = 'vidData'
+
+    #main.loopLive()
+    #main.loopVid(root, file)
+    main.loopMat(root, file, vidname)
+    #main.runMat(root, file, vidname, targetdir)
