@@ -1,9 +1,10 @@
 #!/usr/bin/env python
-#import rospy
+
 import copy
 import cv2
 import numpy as np
 import threading
+
 from imagewindow import ImageWindow
 import imageprocessing
 import ui

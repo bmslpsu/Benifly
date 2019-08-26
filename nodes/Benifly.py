@@ -8,26 +8,35 @@ import numpy as np
 import os
 import sys
 import threading
+import pickle
+import time
+
 from setdict import SetDict
 import ui
 from fly import Fly
-from MsgFlyState import Header
 import imageprocessing
 from fileimport import FileImport
-import pickle
-import time
-import datetime
-import csv
+
+from MsgFlyState import Header
+
+
 
 ###############################################################################
 ###############################################################################
 # class MainWindow()
 #
-# This is the main Kinefly window, where we receive images from the camera,
+# This is the main Benifly window, where we receive images from the camera/file,
 # process them using the Fly class, and then output the results.
 #
 class MainWindow:
     def __init__(self):
+        print('')
+        print('**************************************************************************')
+        print('          Benifly: Tethered Insect Kinematics Analyzer')
+        print('                     by Ben Cellini, 2019')
+        print('**************************************************************************')
+        print('')
+
         self.lockParams = threading.Lock()
         self.lockBuffer = threading.Lock()
 
@@ -125,7 +134,7 @@ class MainWindow:
 
         try:
             self.params = pickle.load(open("C:\Users\BC\PycharmProjects\Benifly\params.p", "rb"))
-            print('Loading paramters from file ...')
+            print('Loading Benifly paramters from file ...')
         except IOError:
             print('No saved paramters file ... using defaults')
 
@@ -1142,11 +1151,13 @@ class MainWindow:
         self.vidfile = FileImport()
         self.vidfile.get_matdata(root, file, vidname, targetdir)
 
+        datapath = self.vidfile.targetpath + '.csv'
+        vidpath = self.vidfile.targetpath + '.avi'
         header = "Left , Right , Head , Abdomen"
-        with open(self.vidfile.targetpath, 'wb') as f:
+        with open(datapath, 'wb') as f:
             fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-            vidout = cv2.VideoWriter(targetdir + '\Benifly.avi', fourcc, 60, (self.vidfile.width, self.vidfile.height))
-            np.savetxt(f, [], header=header)
+            vidout = cv2.VideoWriter(vidpath, fourcc, 60, (self.vidfile.width, self.vidfile.height))
+            np.savetxt(f, [], header=header, comments='')
             for frame in range(self.vidfile.n_frame):
                 #print(frame)
                 data = self.vidfile.vid[frame,:,:].T
@@ -1178,29 +1189,22 @@ class MainWindow:
                 except IndexError:
                     pass
 
-                np.savetxt(f, state)
+                np.savetxt(f, state, delimiter=',')
 
                 vidout.write(self.imgOutput)
 
             f.close()
             vidout.release()
+            print('Tracking Complete')
 
 
-if __name__ == '__main__':
-    main = MainWindow()
+#if __name__ == '__main__':
+    #main = MainWindow()
 
-    print('')
-    print('**************************************************************************')
-    print('          Benifly: Tethered Insect Kinematics Analyzer')
-    print('                     by Ben Cellini, 2019')
-    print('**************************************************************************')
-    print('')
-
-    root = 'Q:\Box Sync'
-    file = 'fly_1_trial_2_SOS.mat'
-    targetdir = 'Q:\Box Sync'
-    vidname = 'vidData'
+    #root = 'Q:\Box Sync'
+    #file = 'fly_1_trial_2_SOS.mat'
+    ##vidname = 'vidData'
 
     #main.runLive()
     #main.loopVid(root, file, vidname)
-    main.runVid(root, file, vidname, targetdir)
+    #main.runVid(root, file, vidname, targetdir)

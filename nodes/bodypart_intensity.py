@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-#import rospy
+
 import copy
 import cv2
 import numpy as np
+
 from imagewindow import ImageWindow
 import ui
 

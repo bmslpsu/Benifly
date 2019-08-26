@@ -16,21 +16,38 @@ class FileImport:
         self.width = 0
         self.height = 0
 
+        self.filespec = ''
+        self.files = ''
+        self.n_file = 0
+
+    def get_files(self, root, filespec):
+        # Get all files in directory that fit filespec
+        self.root = root
+        self.filespec = filespec
+
+        os.chdir(self.root)
+        self.files = glob.glob(self.filespec)
+        self.files.sort()
+        self.n_file = len(self.files)
+
+
     def get_matdata(self, root, file, vidname, targetdir):
         # Get all files in directory that fit filespec
         self.root = root
         self.file = file
         self.targetdir = targetdir
         self.filename = os.path.splitext(self.file)[0]
-        self.targetpath = self.targetdir + '/' + self.filename + '.txt'
+        self.targetpath = self.targetdir + '/' + self.filename
 
         os.chdir(self.root)
 
         # Extract video data from .mat file
+        print('Loading data ...')
         data = h5py.File(file, 'r')  # load file
         arrays = {}
         for k, v in data.items():
             arrays[k] = np.array(v)
+        print('Data loaded')
 
         self.vid = []
         try:
