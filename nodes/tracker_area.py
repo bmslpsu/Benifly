@@ -87,7 +87,8 @@ class AreaTracker(MotionTrackedBodypartPolar):
     #
     def update_state(self):
         imgNow = self.imgRoiFgMaskedPolarCroppedWindowed
-        #cv2.imshow('DEBUG',imgNow)
+        #cv2.imshow('DEBUG1',imgNow)
+        #cv2.imshow('DEBUG2', self.imgComparison)
         #cv2.waitKey(1)
         
         if (imgNow is not None):
@@ -100,7 +101,7 @@ class AreaTracker(MotionTrackedBodypartPolar):
             self.state.angles  = [(self.stateOrigin_p.angles[0] + angleOffset)]
             self.state.angles  = [((self.state.angles[0] + np.pi) % (2*np.pi)) - np.pi]
             self.state.radii   = [self.stateOrigin_p.radii[0] + radiusOffset]
-
+            #print(self.state.angles)
             
             # Get min,max's
             self.stateLo_p.angles  = [min(self.stateLo_p.angles[0], self.state.angles[0])]
@@ -167,6 +168,9 @@ class AreaTracker(MotionTrackedBodypartPolar):
         if (self.imgComparison is None) and (self.iCount>1):
             self.imgComparison = self.imgRoiFgMaskedPolarCroppedWindowed
             self.windowComparison.set_image(self.imgComparison)
+
+            #cv2.imshow('DEBUG', self.imgComparison)
+            #cv2.waitKey(1)
         
         if (self.params['gui'][self.name]['track']):
             self.update_state()

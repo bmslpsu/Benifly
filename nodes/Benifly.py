@@ -10,6 +10,7 @@ import sys
 import threading
 import pickle
 import time
+import json
 
 from setdict import SetDict
 import ui
@@ -134,7 +135,10 @@ class MainWindow():
                     }
 
         try:
-            self.params = pickle.load(open(self.mainroot + "\params.p", "rb"))
+            #self.params = pickle.load(open(self.mainroot + "\params.p", "rb"))
+            with open(self.mainroot + "\params.json") as json_file:
+                self.params = json.load(json_file)
+
             print('Loading Benifly paramters from file ...')
         except IOError:
             print('No saved paramters file ... using defaults')
@@ -1108,6 +1112,9 @@ class MainWindow():
 
             with self.lockParams:
                 pickle.dump(self.params, open( self.mainroot + "\params.p", "wb" ) )
+
+                with open(self.mainroot + "\params.json", 'w') as outfile:
+                    json.dump(self.params, outfile)
 
             self.bMousing = False
             self.nameSelected = None
