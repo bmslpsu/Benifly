@@ -1139,7 +1139,7 @@ class MainWindow():
             self.image_callback(gray)
             self.process_image()
 
-    def loopVid(self, root, file,):
+    def loopVid(self, root, file):
         while (True):
             cap = cv2.VideoCapture(root + '/' + file)
             iCount = 1
@@ -1221,6 +1221,67 @@ class MainWindow():
             print('Tracking Complete')
 
 
+    def runVid(self, root, file, targetdir):
+        self.vidfile = FileImport()
+        self.vidfile.get_filedata(root, file, targetdir)
+
+        datapath = self.vidfile.targetpath + '.csv'
+        vidpath = self.vidfile.targetpath + '.avi'
+        header = "Left , Right , Head , Abdomen"
+        with open(datapath, 'wb') as f:
+            fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+            vidout = cv2.VideoWriter(vidpath, fourcc, 60, (self.vidfile.width, self.vidfile.height))
+            np.savetxt(f, [], header=header, comments='')
+            cap = cv2.VideoCapture(self.vidfile.filepath)
+            iCount = 1
+            while (cap.isOpened()):
+                ret, frame = cap.read()
+                if ret:
+                    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                    self.image_callback(gray)
+                    self.process_image()
+                else:
+                    break
+
+                state = np.empty((1,4))
+                state[:] = np.nan
+
+                try:
+                    state[0,0] = self.fly.left.state.angles[0]
+                    #print(self.fly.head.state.angles[0])
+                except IndexError:
+                    pass
+
+                try:
+                    state[0,1] = self.fly.right.state.angles[0]
+                except IndexError:
+                    pass
+
+                try:
+                    state[0,2] = self.fly.head.state.angles[0]
+                except IndexError:
+                    pass
+
+                try:
+                    state[0,3] = self.fly.abdomen.state.angles[0]
+                except IndexError:
+                    pass
+
+                np.savetxt(f, state, delimiter=',')
+
+                vidout.write(self.imgOutput)
+
+                iCount+=1
+                print(iCount)
+
+            f.close()
+            vidout.release()
+
+            cap.release()
+            cv2.destroyAllWindows()
+
+            print('Tracking Complete')
+
 if __name__ == '__main__':
     mainroot = "C:\Users/boc5244\PycharmProjects\Benifly"
 
@@ -1229,9 +1290,14 @@ if __name__ == '__main__':
     root = 'H:\EXPERIMENTS\Experiment_SOS\Vid'
     file = 'fly_2_trial_3_SOS.mat'
     vidname = 'vidData'
-    targetdir = 'C:\Users/boc5244\Documents/temp'
+    targetdir = 'C:\Users/boc5244\Documents/temp/out'
 
-    #main.loopLive()
-    #main.loopVid(root, file)
-    main.loopMat(root, file, vidname)
-    #main.runMat(root, file, vidname, targetdir)
+    # root = 'C:\Users/boc5244\Documents/temp'
+    # file = 'TEST.avi'
+    # targetdir = 'C:\Users/boc5244\Documents/temp/out'
+
+    # main.loopLive()
+    # main.loopVid(root, file)
+    # main.loopMat(root, file, vidname)
+    main.runMat(root, file, vidname, targetdir)
+    # main.runVid(root, file, targetdir)

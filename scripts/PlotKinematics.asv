@@ -1,0 +1,13 @@
+%% Plot Benifly Output
+root = 'C:\Users\boc5244\Documents\temp\out';
+
+[file,path] = uigetfile({'*.csv'},'Select Benifly output .csv', root, 'MultiSelect','off');
+filedata = ImportBenifly(fullfile(path,file), 4);
+
+FIG = figure (1) ; clf
+FIG.Color = 'k';
+FIG.Units = 'inches';
+FIG.Position = [2 2 6 4];
+movegui(FIG,'center')
+
+

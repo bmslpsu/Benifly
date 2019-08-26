@@ -2,7 +2,7 @@
 Offline version of Kinefly for Windows/Linux without ROS
 
 ## Introduction
-[**Benifly**](https://github.com/bmslpsu/Benifly) is based on [**Kinefly**](https://github.com/ssafarik/Kinefly) software developed by [Steve Safarik](https://github.com/ssafarik), which was designed for tracking tethered insect kiematics in real time. While Kinefly is designed for ROS, which requires a Linuxed based OS, Benifly only requires [Python 2](https://www.python.org/downloads/release/python-273/), so any recent Windows OS is appropriate. Benifly maintains the majority of Kinefly's core functionality, including virtually all image processing algorithms and error handling. However, instead of taking in an image stream from a camera in real-time, Benifly reads in previously recorded video files (tested for .avi,.mp4, & MATLAB data).
+[**Benifly**](https://github.com/bmslpsu/Benifly) is based on [**Kinefly**](https://github.com/ssafarik/Kinefly) software developed by [Steve Safarik](https://github.com/ssafarik), which was designed for tracking tethered insect kiematics in real time. While Kinefly is designed for ROS, which requires a Linuxed based OS, Benifly only requires [Python 2](https://www.python.org/downloads/release/python-273/), so any recent Windows OS is appropriate. Benifly maintains the majority of Kinefly's core functionality, including virtually all image processing algorithms and error handling. However, instead of taking in an image stream from a camera in real-time, Benifly reads in previously recorded video files (tested for .avi,.mp4, & MATLAB data). Kinefly's real-time data visualization & debugging services are currently unavaiable, but this may change in the future.
 
 ##### Disclamer
 Benifly is by no means a finished & bug-free software. If you try hard enough, it can be broken.
@@ -31,28 +31,31 @@ The user can set the following variables:
  ### Main Classes & Methods
  Currently, the main class `Benifly.py` has five methods that can be called.
  
- #### 1. `Benifly.loopMat(root, file, vidname)`
+ #### 1. `loopMat(root, file, vidname)`
  Will continuously track a MATLAB  `.mat` video in a file located in the `root` with filename `file` until stopped by the user. There is no output, which is useful for setting masks & other parameters before tracking. The input parameter `vidname` must be the MATLAB variable that the video is stores under. Note that the video must be in grayscale form (3D matrix).
  
-  #### 2. `Benifly.runMat(root, file, vidname, targetdir)`
- Works just like like `Benifly.matLoop()`, but will track a video stored in a `.mat` file **and** output data to the `targetdir`(tracking only runs once & is no longer continuous).
+  #### 2. `runMat(root, file, vidname, targetdir)`
+ Works just like like `matLoop()`, but will track a video stored in a `.mat` file **and** output data to the `targetdir`(tracking only runs once & is no longer continuous).
   
-  #### 3. `Benifly.loopVid(root, file, vidname)`
- Works just like like `Benifly.runMat()`, but takes a video format file (`.avi`, .`mp4`, `.mov`, etc.) instead of a `.mat` file.
+  #### 3. `loopVid(root, file)`
+ Works just like like `runMat()`, but takes a video format file (`.avi`, .`mp4`, `.mov`, etc.) instead of a `.mat` file.
  
-  #### 4. `Benifly.runVid(root, file, vidname, targetdir)`
- Works just like like `Benifly.runMat()`, but takes a video format file (`.avi`, .`mp4`, `.mov`, etc.) instead of a `.mat` file.
+  #### 4. `runVid(root, file, vidname, targetdir)`
+ Works just like like `runMat()`, but takes a video format file (`.avi`, .`mp4`, `.mov`, etc.) instead of a `.mat` file.
  
-  #### 5. `Benifly.loopLive()`
- Works just like `Benifly.loopMat()` but takes a video format file (`.avi`, .`mp4`, `.mov`, etc.) instead of a `.mat` file.
+  #### 5. `loopLive()`
+ Works just like `loopMat()` but reads in an image stream from the first default usb camera device.
  
  ### Output
- Benifly methods that save data output two files:
- * `filename.csv`: contains the head, abdomen,left & right wing angles for all frames of the input video
- * `filename.avi`: the saved Kinefly video feed
+ Benifly methods that save data (`runMat()`,`runVid()`) output two files:
+ * `filename.csv`: contains the head, abdomen,left & right wing angles for all frames of the input video. There are other outputs from Benifly that are not currently designed to be saved, such as the radii & gradients for each body part.
+ * `filename.avi`: the saved Binefly video feed with tracking illustrations
  
- For both output files, `filename` is will be the same name as the video file fed to Benifly.
- 
+ For both output files, `filename`  will be the same as the name of the video file fed to Benifly.
+
+ ## Other Resources
+ The scripts folder also includes the MATLAB function `ImportBenifly.m` to import Benifly generated .csv files into the workspace, as well as an example script to plot the data (`PlotKinematics.m`)
+  
  ## Example  tracked frame
  Input:
  

@@ -20,6 +20,8 @@ class FileImport:
         self.files = ''
         self.n_file = 0
 
+        self.filepath = ''
+
     def get_files(self, root, filespec):
         # Get all files in directory that fit filespec
         self.root = root
@@ -30,6 +32,14 @@ class FileImport:
         self.files.sort()
         self.n_file = len(self.files)
 
+    def get_filedata(self, root, file, targetdir):
+        # Get all files in directory that fit filespec
+        self.root = root
+        self.file = file
+        self.filepath = self.root + '/' + self.file
+        self.targetdir = targetdir
+        self.filename = os.path.splitext(self.file)[0]
+        self.targetpath = self.targetdir + '/' + self.filename
 
     def get_matdata(self, root, file, vidname, targetdir):
         # Get all files in directory that fit filespec

@@ -1,5 +1,5 @@
 function filedata = ImportBenifly(filename, dataLines)
-%% ImportBenifly: Import data from a text file, returns the data as a table.
+%% ImportBenifly: Import data from a text file, return the data as a table.
 
 % If dataLines is not specified, define defaults
 if nargin < 2
