@@ -16,7 +16,6 @@ Benifly requires the following external Python packages:
 * **h5py**      (to load .mat files)
 
 ## Operation
-### General
 **It is recommended that users start by reading [Kinefly documentation](https://github.com/ssafarik/Kinefly) to understand the basic functionality of the software.**
 
 The first Python file that should be run is `BatchBenifly.py`. This is a simple script that constructs a Benifly object and calls it's methods. The user can specify which video files to feed to Benifly, where to save the output, and what specific method they would like to use (detailed below). Once the user becomes familiar with how Benifly works, he or she can write their own version of this script to suit his or her data processing needs.
