@@ -8,7 +8,6 @@ import numpy as np
 import os
 import sys
 import threading
-import pickle
 import time
 import json
 
@@ -138,10 +137,9 @@ class MainWindow():
             #self.params = pickle.load(open(self.mainroot + "\params.p", "rb"))
             with open(self.mainroot + "\params.json") as json_file:
                 self.params = json.load(json_file)
-
-            print('Loading Benifly paramters from file ...')
+                print('Loading Benifly parameters from file ...')
         except IOError:
-            print('No saved paramters file ... using defaults')
+            print('No saved parameters file ... using defaults')
 
         SetDict().set_dict_with_preserve(self.params, defaults)
         self.params = self.legalizeParams(self.params)
@@ -590,7 +588,7 @@ class MainWindow():
                     ptBar0 = (xBar, yBar)
                     ptBar1 = (xBar + int(self.aQueue * nBar), yBar)
                     if (self.dnQueueF > 0):
-                        bgra = ui.bgra_dict['dark_red']
+                        bgra = ui.bgra_dict['dark_green']
                     else:
                         bgra = ui.bgra_dict['dark_green']
 
@@ -698,7 +696,8 @@ class MainWindow():
     #
     def save_background(self):
         print('Saving new background image %s' % self.filenameBackground)
-        cv2.imwrite(self.mainroot + '/' + 'Benifly.png', self.imgUnscaled)
+        cv2.imwrite(self.mainroot + '/image/' + 'Benifly.png', self.imgUnscaled)
+        cv2.imwrite(self.mainroot + '/image/' + 'BeniflyTracked.png', self.imgOutput)
         self.fly.set_background(self.imgScaled)
         self.bHaveBackground = True
 
@@ -1111,7 +1110,7 @@ class MainWindow():
                 self.fly.create_masks(self.shapeImage)
 
             with self.lockParams:
-                pickle.dump(self.params, open( self.mainroot + "\params.p", "wb" ) )
+                #pickle.dump(self.params, open( self.mainroot + "\params.p", "wb" ) )
 
                 with open(self.mainroot + "\params.json", 'w') as outfile:
                     json.dump(self.params, outfile)
@@ -1159,7 +1158,7 @@ class MainWindow():
             cap.release()
             cv2.destroyAllWindows()
 
-    def loopMat(self, root, file, vidname,):
+    def loopMat(self, root, file, vidname):
         self.vidfile = FileImport()
         self.vidfile.get_matdata(root, file, vidname, '')
 
@@ -1223,13 +1222,14 @@ class MainWindow():
 
 
 if __name__ == '__main__':
-    mainroot = "C:\Users\BC\PycharmProjects\Benifly"
+    mainroot = "C:\Users/boc5244\PycharmProjects\Benifly"
 
     main = MainWindow(mainroot)
 
-    root = 'Q:/temp'
-    file = 'fly_1_trial_1_SOS.mat'
+    root = 'H:\EXPERIMENTS\Experiment_SOS\Vid'
+    file = 'fly_2_trial_3_SOS.mat'
     vidname = 'vidData'
+    targetdir = 'C:\Users/boc5244\Documents/temp'
 
     #main.loopLive()
     #main.loopVid(root, file)
