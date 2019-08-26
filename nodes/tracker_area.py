@@ -10,7 +10,6 @@ from bodypart_motion import  MotionTrackedBodypartPolar
 from MsgFlyState import  MsgState
 
 
-
 ###############################################################################
 ###############################################################################
 # AreaTracker()

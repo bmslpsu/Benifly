@@ -1135,9 +1135,13 @@ class MainWindow():
         cap = cv2.VideoCapture(0)
         while (True):
             ret, frame = cap.read()
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            self.image_callback(gray)
-            self.process_image()
+            if ret:
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                self.image_callback(gray)
+                self.process_image()
+            else:
+                print('No compatible video device ...')
+                break
 
     def loopVid(self, root, file):
         while (True):
@@ -1298,6 +1302,6 @@ if __name__ == '__main__':
 
     # main.loopLive()
     # main.loopVid(root, file)
-    # main.loopMat(root, file, vidname)
-    main.runMat(root, file, vidname, targetdir)
+    #main.loopMat(root, file, vidname)
+    # main.runMat(root, file, vidname, targetdir)
     # main.runVid(root, file, targetdir)
