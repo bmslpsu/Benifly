@@ -8,7 +8,7 @@ filedata = ImportBenifly(fullfile(path,file), 4);
 FIG = figure (1) ; clf
 FIG.Color = 'w';
 FIG.Units = 'inches';
-FIG.Position = [2 2 8 6];
+FIG.Position = [2 2 7 5];
 movegui(FIG,'center')
 
 tt = linspace(0,21,size(filedata,1))';
@@ -27,7 +27,6 @@ plot(tt,filedata.Right, 'r', 'LineWidth',1)
 ax(4) = subplot(4,1,4) ; hold on ; title('Abdomen')
 plot(tt,filedata.Abdomen, 'm', 'LineWidth',1)
 xlabel('Time')
-
 
 set(ax,'XLim',[0 tt(end)])
 set(ax,'YTick',[])

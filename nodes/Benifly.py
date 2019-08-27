@@ -698,7 +698,7 @@ class MainWindow():
     # Save the current camera image as the background.
     #
     def save_background(self):
-        print('Saving new background image %s' % self.filenameBackground)
+        print('Saving new background image ...')
         cv2.imwrite(self.mainroot + '/image/' + 'Benifly.png', self.imgUnscaled)
         cv2.imwrite(self.mainroot + '/image/' + 'BeniflyTracked.png', self.imgOutput)
         self.fly.set_background(self.imgScaled)
@@ -1035,7 +1035,7 @@ class MainWindow():
                     self.save_background()
 
                 elif (self.nameSelected == self.nameSelectedNow == 'exit'):
-                    sys.exit()
+                    sys.exit('Exit Benifly ...')
 
 
             elif (self.uiSelected == 'checkbox'):
@@ -1148,7 +1148,7 @@ class MainWindow():
 
     def loopVid(self, root, file):
         while (True):
-            cap = cv2.VideoCapture(root + '/' + file)
+            cap = cv2.VideoCapture(os.path.join(root,file))
             iCount = 1
             while (cap.isOpened()):
                 ret, frame = cap.read()
@@ -1294,17 +1294,17 @@ if __name__ == '__main__':
 
     main = MainWindow(mainroot)
 
-    root = 'H:\EXPERIMENTS\Experiment_SOS\Vid'
-    file = 'fly_2_trial_3_SOS.mat'
-    vidname = 'vidData'
-    targetdir = 'C:\Users/boc5244\Documents/temp/out'
-
-    # root = 'C:\Users/boc5244\Documents/temp'
-    # file = 'TEST.avi'
+    # root = 'H:\EXPERIMENTS\Experiment_SOS\Vid'
+    # file = 'fly_2_trial_3_SOS.mat'
+    # vidname = 'vidData'
     # targetdir = 'C:\Users/boc5244\Documents/temp/out'
 
+    root = 'C:\Users/boc5244\Documents/temp'
+    file = 'TEST.avi'
+    targetdir = 'C:\Users/boc5244\Documents/temp/out'
+
     # main.loopLive()
+    # main.loopMat(root, file, vidname)
     # main.loopVid(root, file)
-    #main.loopMat(root, file, vidname)
     # main.runMat(root, file, vidname, targetdir)
     # main.runVid(root, file, targetdir)

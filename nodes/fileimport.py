@@ -36,10 +36,10 @@ class FileImport:
         # Get all files in directory that fit filespec
         self.root = root
         self.file = file
-        self.filepath = self.root + '/' + self.file
+        self.filepath = os.path.join(self.root,self.file)
         self.targetdir = targetdir
         self.filename = os.path.splitext(self.file)[0]
-        self.targetpath = self.targetdir + '/' + self.filename
+        self.targetpath = os.path.join(self.targetdir, self.filename)
 
     def get_matdata(self, root, file, vidname, targetdir):
         # Get all files in directory that fit filespec
@@ -47,7 +47,7 @@ class FileImport:
         self.file = file
         self.targetdir = targetdir
         self.filename = os.path.splitext(self.file)[0]
-        self.targetpath = self.targetdir + '/' + self.filename
+        self.targetpath = os.path.join(self.targetdir,self.filename)
 
         os.chdir(self.root)
 
