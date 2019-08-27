@@ -33,6 +33,8 @@ class AreaTracker(MotionTrackedBodypartPolar):
         self.windowComparison   = ImageWindow(True, self.name+'Comparison')
         self.set_params(params)
 
+        self.iCount = 0
+
     
     # set_params()
     # Set the given params dict into this object.
@@ -44,7 +46,7 @@ class AreaTracker(MotionTrackedBodypartPolar):
         self.imgComparison = None
         self.windowComparison.set_image(self.imgComparison)
         
-        self.iCount = 0
+        #self.iCount = 0
 
         # Compute the 'handedness' of the head/abdomen and wing/wing axes.  self.sense specifies the direction of positive angles.
         matAxes = np.array([[self.params['gui']['head']['hinge']['x']-self.params['gui']['abdomen']['hinge']['x'], self.params['gui']['head']['hinge']['y']-self.params['gui']['abdomen']['hinge']['y']],
@@ -101,7 +103,9 @@ class AreaTracker(MotionTrackedBodypartPolar):
             self.state.angles  = [((self.state.angles[0] + np.pi) % (2*np.pi)) - np.pi]
             self.state.radii   = [self.stateOrigin_p.radii[0] + radiusOffset]
             #print(self.state.angles)
-            
+            #print(self.iCount)
+            #self.iCount+=1
+
             # Get min,max's
             self.stateLo_p.angles  = [min(self.stateLo_p.angles[0], self.state.angles[0])]
             self.stateHi_p.angles  = [max(self.stateHi_p.angles[0], self.state.angles[0])]

@@ -60,7 +60,6 @@ The user can set the following variables:
  The `params.json` file in the *Benifly* root directory stores all startup information for the GUI and tracking methods. Everytime a paramter is changed in the Knefly GUI (such as a mask location), this information will be dumped to the file. The user can also edit this file to change parameters before startup. `.json` files are not especially readable/editable in text format, so  a `.json` [viewer](http://jsonviewer.stack.hu/) may me helpful. If *Benifly* cannot find this file on startup, then default paramters will be used and a new `params.json` file will be created. In order to ensure that *Benifly* can access `params.json`, be sure to set `mainroot` as the location of your *Benifly* module.
  
  ## Benifly vs Kinefly
-  * **Area Tracking is currently not functional**
   * *Kinefly* ROS commands (help, gui_on, gui_off, exit) are not functional.
   * *Kinefly's* real-time data visualization & performance tracking services are currently unavaiable, but this may change in the future.
   * *Kinefly's* LED Panels Control & Voltage Output functionality is not currently included.

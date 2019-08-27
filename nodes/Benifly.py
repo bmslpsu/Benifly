@@ -151,6 +151,7 @@ class MainWindow():
 
         # Create the fly.
         self.fly = Fly(self.params)
+        self.fly.set_params(self.params)
 
         # Background image.
         self.filenameBackground = os.path.expanduser(self.params['filenameBackground'])
@@ -549,8 +550,10 @@ class MainWindow():
                 self.header.seq = 1
                 self.header.stamp = 1
                 self.header.frame_id = 1
-                self.fly.set_params(self.params)
+                #---------------------------------------------
+                #self.fly.set_params(self.params)
                 self.fly.update(self.header, self.imgScaled)
+                #---------------------------------------------
                 #print(self.fly.head.state.angles)
                 #self.fly.set_params(self.params)
 
