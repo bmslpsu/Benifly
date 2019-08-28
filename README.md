@@ -35,7 +35,7 @@ The user can set the following variables:
  Currently, the main class `Benifly.py` has five methods that can be called.
  
  
- #### 1. `loopMat(root, file, vidname) 
+ #### 1. `loopMat(root, file, vidname)` 
  Will continuously track a MATLAB  `.mat` video in a file located in the `root` with filename `file` until stopped by the user. There is no output, which is useful for setting masks & other parameters before tracking. The input parameter `vidname` must be the MATLAB variable that the video is stored under. Note that the video must be in grayscale form (3D matrix).
  
   #### 2. `runMat(root, file, vidname, targetdir)`
@@ -62,7 +62,7 @@ The user can set the following variables:
  
  ## Benifly vs Kinefly
   * *Kinefly* ROS commands (help, gui_on, gui_off, exit) are not functional.
-  * *Kinefly's* real-time data visualization & performance tracking services are currently unavaiable, but this may change in the future.
+  * *Kinefly's* data visualization & performance tracking services are currently unavaiable, but this may change in the future.
   * *Kinefly's* LED Panels Control & Voltage Output functionality is not included.
   * *Benifly* does not currently have background subtraction capabilities, but the `saveBG` button on the GUI will save the raw & tracked image to the `image` folder.
   * *Benifly's* wing-beat-frequency detcector (aux mask) will not return the true WBF becuase the play back rate is presumably not the same as the rate that the video was recorded.
