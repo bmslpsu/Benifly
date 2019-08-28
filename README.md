@@ -2,7 +2,7 @@
 Offline version of *Kinefly* for Windows/Linux without ROS
 
 ## Introduction
-[**Benifly**](https://github.com/bmslpsu/Benifly) is based on [**Kinefly**](https://github.com/ssafarik/Kinefly) software developed by [Steve Safarik](https://github.com/ssafarik), which was designed for tracking tethered insect kiematics in real time. While *Kinefly* is designed for ROS, which requires a Linuxed based OS, *Benifly* only requires [Python 2](https://www.python.org/downloads/release/python-273/), so any recent Windows OS is appropriate. *Benifly* maintains the majority of *Kinefly's* core functionality, including virtually all image processing algorithms and error handling. However, instead of taking in an image stream from a camera in real-time, *Benifly* reads in previously recorded video files (tested for .avi,.mp4, & MATLAB data).
+[**Benifly**](https://github.com/bmslpsu/Benifly) is based on [**Kinefly**](https://github.com/ssafarik/Kinefly) software developed by [Steve Safarik](https://github.com/ssafarik), which was designed for tracking tethered insect kinematics in real time. While *Kinefly* is designed for ROS, which requires a Linuxed based OS, *Benifly* only requires [Python 2](https://www.python.org/downloads/release/python-273/), so any recent Windows OS is appropriate. *Benifly* maintains the majority of *Kinefly's* core functionality, including virtually all image processing algorithms and error handling. However, instead of taking in an image stream from a camera in real-time, *Benifly* reads in previously recorded video files (tested for `.avi`,`.mp4`, & MATLAB data).
 
 The BMSL Lab also maintains a [Kinefly repository](https://github.com/bmslpsu/Kinefly) that has been tested for Ubuntu 16.04 & ROS Kinetic and Ubuntu 18.04 & ROS Melodic.
 
@@ -13,14 +13,14 @@ The BMSL Lab also maintains a [Kinefly repository](https://github.com/bmslpsu/Ki
 *Benifly* is simply a collection of Python classes and functions that can be called to perform various computer vision alogorithms, thus there are no special installion requirements. The repository should simply be cloned into a directory of your choosing, and the Python path should be set to include all modules in the main *Benifly* directory. It is highly reccomended that users install an integrated development environment (IDE) to manage modules and packages ([Pycharm](https://www.jetbrains.com/pycharm/) & [Visual Studios](https://visualstudio.microsoft.com/) work well).
 
 *Benifly* requires the following external Python packages:
-* **opencv-python**   (for various image processing processes)
-* **h5py**      (to load .mat files)
+* **opencv-python**   (for various image processing tasks)
+* **h5py**      (to load `.mat` files)
 * **numpy**     (to handle numeric data & calculations)
 
 ## Operation
 **It is recommended that users start by reading [Kinefly documentation](https://github.com/ssafarik/Kinefly) to understand the basic functionality of the software.**
 
-The first Python file that should be run is `BatchBenifly.py`. This is a simple script that constructs a *Benifly* object and calls it's methods. The user can specify which video files to feed to *Benifly*, where to save the output, and what specific method they would like to use (detailed below). Once the user becomes familiar with how *Benifly* works, he or she can write their own version of this script to suit his or her data processing needs.
+Users should start with the script `BatchBenifly.py`. This constructs a *Benifly* object and calls it's methods. The user can specify which video files to feed to *Benifly*, where to save the output, and what specific method they would like to use (detailed below). Once the user becomes familiar with how *Benifly* works, he or she can write their own version of this script to suit his or her data processing needs.
 
 The user can set the following variables:
  * `mainroot`: directory where *Benifly* is located

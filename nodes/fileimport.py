@@ -56,7 +56,10 @@ class FileImport:
         data = h5py.File(file, 'r')  # load file
         arrays = {}
         for k, v in data.items():
-            arrays[k] = np.array(v)
+            try:
+                arrays[k] = np.array(v)
+            except:
+                print('Can not load in variable')
         print('Data loaded')
 
         self.vid = []

@@ -58,7 +58,7 @@ class MainWindow():
                     'rc_background': 1000.0,  # Time constant of the moving average background.
                     'wingbeat_min': 180,  # Bounds for wingbeat frequency measurement.
                     'wingbeat_max': 220,
-                    'head': {'tracker': 'tip',
+                    'head': {'tracker': 'area',
                              'autozero': True,  # Automatically figure out where is the center of motion.
                              'threshold': 0.0,
                              'feathering': 0.25,  # How much to feather the edge pixels for motion tracking by area.
@@ -91,7 +91,7 @@ class MainWindow():
                                      'subtract_bg': False,  # Use background subtraction?
                                      'stabilize': False,  # Image stabilization of the bodypart.
                                      'hinge': {'x': 175,  # Hinge position in image coordinates.
-                                               'y': 40},
+                                               'y': 90},
                                      'radius_outer': 20,  # Outer radius in pixel units.
                                      'radius_inner': 10,  # Inner radius in pixel units.
                                      'angle_hi': 0.7854,  # Angle limit in radians.
