@@ -75,6 +75,7 @@ The user can set the following variables:
   
  ## Examples
  #### Input Frame:
+ A frame from a video of a rigidly tethered fruit fly (*Drosophila melanogaster*) in a visual motor task.
  
  ![Input](image/Benifly.png)
  
