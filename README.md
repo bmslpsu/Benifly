@@ -68,7 +68,7 @@ The user can set the following variables:
   * *Benifly's* wing-beat-frequency detcector (aux mask) will not return the true WBF becuase the play back rate is presumably not the same as the rate that the video was recorded.
 
 ## Troubleshooting
-* If *Benifly* is returning any errors  similar to  "outside of range" or "index error", this is most likely because you have a smaller sized video and the default masks are set outside the pixel range. This error can occur in `Kinefly` as well. To solve this, edit the `params.json`: turn tracking off for all body parts & change the positions of the mask points to lie within your pixel range. This may be automated in the future.
+* If *Benifly* is returning any errors  similar to  "outside of range" or "index error", this is most likely because you have a smaller sized video and the default masks are set outside the pixel range. This error can occur in `Kinefly` as well. To solve this, edit the `params.json`: turn tracking off for all body parts & change the positions of the mask points to lie within your pixel range. This may be automated in the future. Alternatively, increasing the `scale_image` parameter can help in dealing with smaller sized videos.
 
  ## Other Resources
  The scripts folder includes the MATLAB function `ImportBenifly.m` to import *Benifly* generated .csv files into the MATLAB workspace, as well as an example script to call this function and plot the kinematic data (`PlotKinematics.m`)
@@ -85,5 +85,6 @@ The user can set the following variables:
  ![Output](image/BeniflyTracked.png)
  
  #### Tracked Kinematics (abdomen off):
+ Head using area tracker, wings using edge tracker.
  
  ![Output](image/Kinematics.png)
