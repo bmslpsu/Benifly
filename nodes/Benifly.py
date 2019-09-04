@@ -3,14 +3,15 @@
 
 from __future__ import division
 import copy
-import cv2
-import numpy as np
 import os
 import sys
 import threading
 import time
 import json
 import imp
+
+import cv2
+import numpy as np
 
 from setdict import SetDict
 import ui

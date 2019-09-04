@@ -24,7 +24,7 @@ Users should start with the script `BatchBenifly.py`. This constructs a *Benifly
 
 The user can set the following variables:
  * `root`: directory where video files are located
- * `filespec`: this can be a file name or partial file ; *BatchBenifly* reads in all files with the filespec
+ * `filespec`: this can be a file name or partial file ; *BatchBenifly* reads in all files with the filespec. Ex: " filespec = Fly_1_*.mat " will track all files staring with " Fly_1_ ".
  * `targetdir`: directory to save output
  * `vidname`: the name of the video data variable in the .mat file (necessary for MATLAB videos only)
  

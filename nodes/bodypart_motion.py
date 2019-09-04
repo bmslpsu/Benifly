@@ -347,12 +347,6 @@ class MotionTrackedBodypart(object):
 
             # Apply the mask.
             if (self.imgRoiFg is not None) and (self.mask.img is not None):
-                #rospy.logwarn(len(self.imgRoiFg.astype(self.mask.img.dtype)))
-                #rospy.logwarn(len(self.mask.img.dtype))
-                #cv2.imshow('TEST1', self.mask.img)
-                #cv2.imshow('TEST2', self.imgRoiFg.astype(self.mask.img.dtype))
-                #cv2.waitKey(0)
-
                 self.imgRoiFgMasked = cv2.bitwise_and(self.imgRoiFg.astype(self.mask.img.dtype), self.mask.img)
                 self.imgFinal = self.imgRoiFgMasked
             else:

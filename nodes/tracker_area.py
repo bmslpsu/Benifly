@@ -88,10 +88,7 @@ class AreaTracker(MotionTrackedBodypartPolar):
     #
     def update_state(self):
         imgNow = self.imgRoiFgMaskedPolarCroppedWindowed
-        #cv2.imshow('DEBUG1',imgNow)
-        #cv2.imshow('DEBUG2', self.imgComparison)
-        #cv2.waitKey(1)
-        
+
         if (imgNow is not None):
             # Get the rotation & expansion between images.
             (rShift, aShift) = self.phasecorr.get_shift(imgNow, self.imgComparison)
@@ -171,9 +168,6 @@ class AreaTracker(MotionTrackedBodypartPolar):
         if (self.imgComparison is None) and (self.iCount>1):
             self.imgComparison = self.imgRoiFgMaskedPolarCroppedWindowed
             self.windowComparison.set_image(self.imgComparison)
-
-            #cv2.imshow('DEBUG', self.imgComparison)
-            #cv2.waitKey(1)
         
         if (self.params['gui'][self.name]['track']):
             self.update_state()
