@@ -5,15 +5,13 @@ import time
 
 # USER: set these variables
 #---------------------------------------------------------------------------------------
-mainroot = "C:\Users/boc5244\PycharmProjects\Benifly" # location of Benifly root
-#---------------------------------------------------------------------------------------
 root = 'H:\EXPERIMENTS\Experiment_SOS_v2'  # folder with MATLAB video files
 filespec = 'fly_2_trial_3_SOS.mat' # files to track
 targetdir = 'C:\Users/boc5244\Documents/temp\out' # where to save output data & video
 vidname = 'vidData' # name of video variable in MATLAB .mat file
 #---------------------------------------------------------------------------------------
 
-Benifly = MainWindow(mainroot) # create Benifly instance
+Benifly = MainWindow() # create Benifly instance
 VID = FileImport() # create FileImport instance
 VID.get_files(root,filespec) # get all files that fit filespec in root
 print(VID.files)

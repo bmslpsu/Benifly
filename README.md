@@ -23,7 +23,6 @@ The BMSL Lab also maintains a [Kinefly repository](https://github.com/bmslpsu/Ki
 Users should start with the script `BatchBenifly.py`. This constructs a *Benifly* object and calls it's methods. The user can specify which video files to feed to *Benifly*, where to save the output, and what specific method they would like to use (detailed below). Once the user becomes familiar with how *Benifly* works, he or she can write their own version of this script to suit his or her data processing needs.
 
 The user can set the following variables:
- * `mainroot`: directory where *Benifly* is located
  * `root`: directory where video files are located
  * `filespec`: this can be a file name or partial file ; *BatchBenifly* reads in all files with the filespec
  * `targetdir`: directory to save output
@@ -58,7 +57,10 @@ The user can set the following variables:
  For both output files, `filename`  will be the same as the name of the video file fed to *Benifly*.
  
  ### Setting & Saving Parameters
- The `params.json` file in the *Benifly* root directory stores all startup information for the GUI and tracking methods. Everytime a parameter is changed in the Knefly GUI (such as a mask location), this information will be dumped to the file. The user can also edit this file to change parameters before startup. `.json` files are not especially readable/editable in text format, so  a `.json` [viewer](http://jsonviewer.stack.hu/) may me helpful. If *Benifly* cannot find this file on startup, then default paramters will be used and a new `params.json` file will be created. In order to ensure that *Benifly* can access `params.json`, be sure to set `mainroot` as the location of your *Benifly* module.
+ The `params.json` file in the *Benifly* root directory stores all startup information for the GUI and tracking methods. Everytime a parameter is changed in the Knefly GUI (such as a mask location), this information will be dumped to the file. The user can also edit this file to change parameters before startup. `.json` files are not especially readable/editable in text format, so  a `.json` [viewer](http://jsonviewer.stack.hu/) may me helpful. If *Benifly* cannot find this file on startup, then default paramters will be used and a new `params.json` file will be created.
+ 
+ ### Exiting Benifly
+ **Do not use the *X* in the top right corner**. This will cause problems. Instead click the the exit button on the top left.
  
  ## Benifly vs Kinefly
   * *Kinefly* ROS commands (help, gui_on, gui_off, exit) are not functional.

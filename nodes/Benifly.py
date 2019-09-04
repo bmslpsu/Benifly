@@ -10,6 +10,7 @@ import sys
 import threading
 import time
 import json
+import imp
 
 from setdict import SetDict
 import ui
@@ -29,7 +30,7 @@ from MsgFlyState import Header
 # process them using the Fly class, and then output the results.
 #
 class MainWindow():
-    def __init__(self, mainroot):
+    def __init__(self):
         print('')
         print('**************************************************************************')
         print('          Benifly: Tethered Insect Kinematics Analyzer')
@@ -37,12 +38,13 @@ class MainWindow():
         print('**************************************************************************')
         print('')
 
-        self.mainroot = mainroot
+        # Initialize
+        self.nodename  = MainWindow.__module__
+        self.mainroot = os.path.dirname(os.path.dirname(imp.find_module(self.nodename)[1]))
+        print "Path to", self.nodename , ":", self.mainroot
+
         self.lockParams = threading.Lock()
         self.lockBuffer = threading.Lock()
-
-        # Initialize
-        self.nodename = 'Benifly'
         self.background = os.path.join(self.mainroot,'image',self.nodename + '.png')
 
         # Initialize display
@@ -1291,18 +1293,12 @@ class MainWindow():
             print('Tracking Complete')
 
 if __name__ == '__main__':
-    mainroot = "C:\Users/boc5244\PycharmProjects\Benifly"
-
-    main = MainWindow(mainroot)
+    main = MainWindow()
 
     # root = 'H:\EXPERIMENTS\Experiment_SOS\Vid'
     # file = 'fly_2_trial_3_SOS.mat'
     # vidname = 'vidData'
     # targetdir = 'C:\Users/boc5244\Documents/temp/out'
-
-    root = 'C:\Users/boc5244\Documents/temp'
-    file = 'TEST.avi'
-    targetdir = 'C:\Users/boc5244\Documents/temp/out'
 
     # main.loopLive()
     # main.loopMat(root, file, vidname)
