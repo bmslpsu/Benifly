@@ -58,13 +58,13 @@ The user can set the following variables:
  For both output files, `filename`  will be the same as the name of the video file fed to *Benifly*.
  
  ### Setting & Saving Parameters
- The `params.json` file in the *Benifly* root directory stores all startup information for the GUI and tracking methods. Everytime a paramter is changed in the Knefly GUI (such as a mask location), this information will be dumped to the file. The user can also edit this file to change parameters before startup. `.json` files are not especially readable/editable in text format, so  a `.json` [viewer](http://jsonviewer.stack.hu/) may me helpful. If *Benifly* cannot find this file on startup, then default paramters will be used and a new `params.json` file will be created. In order to ensure that *Benifly* can access `params.json`, be sure to set `mainroot` as the location of your *Benifly* module.
+ The `params.json` file in the *Benifly* root directory stores all startup information for the GUI and tracking methods. Everytime a paramter is changed in the Knefly GUI (such as a mask location), this information will be dumped to the file. The user can also edit this file to change parameters before startup. `.json` files are not especially readable/editable in text format, so  a `.json` [viewer](http://jsonviewer.stack.hu/) may be helpful. If *Benifly* cannot find this file on startup, then default parameters will be used and a new `params.json` file will be created. In order to ensure that *Benifly* can access `params.json`, be sure to set `mainroot` as the location of your *Benifly* module.
  
  ## Benifly vs Kinefly
   * *Kinefly* ROS commands (help, gui_on, gui_off, exit) are not functional.
   * *Kinefly's* data visualization & performance tracking services are currently unavaiable, but this may change in the future.
   * *Kinefly's* LED Panels Control & Voltage Output functionality is not included.
-  * *Benifly* does not currently have background subtraction capabilities, but the `saveBG` button on the GUI will save the raw & tracked image to the `image` folder.
+  * *Benifly* `saveBG` button on the GUI will save the raw & tracked image to the `image` folder. Note that turning background subtraction on with a background saved from the video you want to track will cause problems. Generally, background subtraction will only help if you have an image of the camera backgroud **without** the thing you want to track.
   * *Benifly's* wing-beat-frequency detcector (aux mask) will not return the true WBF becuase the play back rate is presumably not the same as the rate that the video was recorded.
 
 ## Troubleshooting

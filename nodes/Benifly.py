@@ -43,13 +43,14 @@ class MainWindow():
 
         # Initialize
         self.nodename = 'Benifly'
+        self.background = os.path.join(self.mainroot,'image',self.nodename + '.png')
 
-        # initialize display
+        # Initialize display
         self.window_name = self.nodename.strip('/')
         cv2.namedWindow(self.window_name, 1)
         # self.cvbridge = CvBridge()
         self.params = {}
-        defaults = {'filenameBackground': '~/%s.png' % self.nodename.strip('/'),
+        defaults = {'filenameBackground': self.background,
                     'image_topic': '/camera/image_raw',
                     'n_queue_images': 2,
                     'use_gui': True,  # You can turn off the GUI to speed the framerate.
@@ -59,27 +60,27 @@ class MainWindow():
                     'wingbeat_min': 180,  # Bounds for wingbeat frequency measurement.
                     'wingbeat_max': 220,
                     'head': {'tracker': 'area',
-                             'autozero': True,  # Automatically figure out where is the center of motion.
+                             'autozero': True,  # Automatically figure out where the center of motion is.
                              'threshold': 0.0,
                              'feathering': 0.25,  # How much to feather the edge pixels for motion tracking by area.
-                             'saturation_correction': False},
+                             'saturation_correction': True},
                     'abdomen': {'tracker': 'tip',
                                 'autozero': True,
                                 'threshold': 0.0,
                                 'feathering': 0.25,  # How much to feather the edge pixels for motion tracking by area.
-                                'saturation_correction': False},
+                                'saturation_correction': True},
                     'left': {'tracker': 'edge',
                              'autozero': True,
                              'threshold': 0.0,
                              'feathering': 0.25,  # How much to feather the edge pixels for motion tracking by area.
-                             'saturation_correction': False},
+                             'saturation_correction': True},
                     'right': {'tracker': 'edge',
                               'autozero': True,
                               'threshold': 0.0,
                               'feathering': 0.25,  # How much to feather the edge pixels for motion tracking by area.
-                              'saturation_correction': False},
+                              'saturation_correction': True},
                     'aux': {'tracker': 'intensity',
-                            'saturation_correction': False},
+                            'saturation_correction': True},
                     'gui': {'windows': False,  # Show the helpful extra windows.
                             'symmetric': True,  # Forces the UI to remain symmetric.
                             'axis': {'track': False,  # To track, or not to track.
