@@ -7,15 +7,15 @@ if nargin < 2
 end
 
 % Setup the Import Options
-opts = delimitedTextImportOptions("NumVariables", 4);
+opts = delimitedTextImportOptions("NumVariables", 6);
 
 % Specify range and delimiter
 opts.DataLines = dataLines;
 opts.Delimiter = ",";
 
 % Specify column names and types
-opts.VariableNames = ["Left", "Right", "Head", "Abdomen"];
-opts.VariableTypes = ["double", "double", "double", "double"];
+opts.VariableNames = ["Time","Head","LWing","RWing","Abdomen","WBF"];
+opts.VariableTypes = ["double","double", "double", "double","double","double"];
 opts.ExtraColumnsRule = "ignore";
 opts.EmptyLineRule = "read";
 

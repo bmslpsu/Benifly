@@ -1035,7 +1035,6 @@ class MainWindow():
             # If the mouse is on the same button at mouseup, then do the action.
             if (self.uiSelected == 'pushbutton'):
                 if (self.nameSelected == self.nameSelectedNow == 'save_bg'):
-                    #self.pubCommand.publish('save_background')
                     self.save_background()
 
                 elif (self.nameSelected == self.nameSelectedNow == 'exit'):
@@ -1159,16 +1158,16 @@ class MainWindow():
                 self.image_callback(data)
                 self.process_image()
 
-    def runMat(self, fullfile, vidname, targetdir):
+    def runMat(self, fullfile, vidname, targetdir, fps=60):
         self.vidfile = FileImport()
         self.vidfile.get_matdata(fullfile, vidname)
 
         datapath = os.path.join(targetdir, self.vidfile.fname + '.csv')
         vidpath  = os.path.join(targetdir, self.vidfile.fname + '.avi')
-        header = "Time, Head, LWing , RWing, Abdomen , WBF"
+        header = "Frame, Head, LeftWing , RightWing, Abdomen , Aux"
         with open(datapath, 'wb') as f:
             fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-            vidout = cv2.VideoWriter(vidpath, fourcc, 60, (self.vidfile.width, self.vidfile.height))
+            vidout = cv2.VideoWriter(vidpath, fourcc, fps, (self.vidfile.width, self.vidfile.height))
             np.savetxt(f, [], header=header, comments='')
             for frame in range(self.vidfile.n_frame):
                 data = self.vidfile.vid[frame,:,:].T
@@ -1226,18 +1225,20 @@ class MainWindow():
 
             cap.release()
 
-    def runVid(self, fullfile, targetdir):
+    def runVid(self, fullfile, targetdir, fps=60):
         self.vidfile = FileImport()
         self.vidfile.get_filedata(fullfile)
 
         datapath = os.path.join(targetdir, self.vidfile.fname + '.csv')
         vidpath = os.path.join(targetdir, self.vidfile.fname + '.avi')
-        header = "Time, Head, LWing , RWing, Abdomen , WBF"
+        header = "Frame, Head, LeftWing , RightWing, Abdomen , Aux"
         with open(datapath, 'wb') as f:
-            fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-            vidout = cv2.VideoWriter(vidpath, fourcc, 60, (480, 640))
-            np.savetxt(f, [], header=header, comments='')
             cap = cv2.VideoCapture(fullfile)
+            frame_width  = int(cap.get(3))
+            frame_height = int(cap.get(4))
+            fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+            vidout = cv2.VideoWriter(vidpath, fourcc, fps, (frame_width, frame_height))
+            np.savetxt(f, [], header=header, comments='')
             iCount = 1
             while (cap.isOpened()):
                 ret, frame = cap.read()
