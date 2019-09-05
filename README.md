@@ -57,7 +57,7 @@ The user can set the following variables:
  For both output files, `filename`  will be the same as the name of the video file fed to *Benifly*.
  
  ### Setting & Saving Parameters
- The `params.json` file in the *Benifly* root directory stores all startup information for the GUI and tracking methods. Everytime a parameter is changed in the Knefly GUI (such as a mask location), this information will be dumped to the file. The user can also edit this file to change parameters before startup. `.json` files are not especially readable/editable in text format, so  a `.json` [viewer](http://jsonviewer.stack.hu/) may me helpful. If *Benifly* cannot find this file on startup, then default paramters will be used and a new `params.json` file will be created.
+ The `params.json` file in the *Benifly* root directory stores all startup information for the GUI and tracking methods. Everytime a parameter is changed in the Knefly GUI (such as a mask location), this information will be dumped to the file. The user can also edit this file to change parameters before startup. `.json` files are not especially readable/editable in text format, so  a `.json` [viewer](https://codebeautify.org/online-json-editor) may me helpful. If *Benifly* cannot find this file on startup, then default paramters will be used and a new `params.json` file will be created.
  
  ### Exiting Benifly
  **Do not use the *X* in the top right corner**. This will cause problems. Instead click the the exit button on the top left.
