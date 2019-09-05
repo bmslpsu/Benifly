@@ -6,21 +6,7 @@ import h5py
 
 class FileImport:
     def __init__(self):
-        self.root = ''
-        self.file = ''
-        self.filename = ''
-        self.targetdir = ''
-        self.targetpath = ''
-        self.vid = []
-        self.n_frame = 0
-        self.width = 0
-        self.height = 0
-
-        self.filespec = ''
-        self.files = ''
-        self.n_file = 0
-
-        self.filepath = ''
+        pass
 
     def get_files(self, root, filespec):
         # Get all files in directory that fit filespec
@@ -32,34 +18,30 @@ class FileImport:
         self.files.sort()
         self.n_file = len(self.files)
 
-    def get_filedata(self, root, file, targetdir):
-        # Get all files in directory that fit filespec
-        self.root = root
-        self.file = file
-        self.filepath = os.path.join(self.root,self.file)
-        self.targetdir = targetdir
-        self.filename = os.path.splitext(self.file)[0]
-        self.targetpath = os.path.join(self.targetdir, self.filename)
+    def get_filedata(self, fullfile):
+        # Get file data
+        self.file = fullfile
+        self.path, self.basename = os.path.split(self.file)
+        self.fname , self.ext = os.path.splitext(self.basename)
+        self.targetfile = os.path.join(self.path,self.fname)
 
-    def get_matdata(self, root, file, vidname, targetdir):
-        # Get all files in directory that fit filespec
-        self.root = root
-        self.file = file
-        self.targetdir = targetdir
-        self.filename = os.path.splitext(self.file)[0]
-        self.targetpath = os.path.join(self.targetdir,self.filename)
-
-        os.chdir(self.root)
+    def get_matdata(self, fullfile, vidname):
+        # Get file data & .mat data
+        self.file = fullfile
+        self.path, self.basename = os.path.split(self.file)
+        self.fname , self.ext = os.path.splitext(self.basename)
+        self.targetfile = os.path.join(self.path,self.fname)
 
         # Extract video data from .mat file
         print('Loading data ...')
-        data = h5py.File(file, 'r')  # load file
+        data = h5py.File(self.file, 'r')  # load file
         arrays = {}
         for k, v in data.items():
             try:
                 arrays[k] = np.array(v)
             except:
-                print('Can not load in variable')
+                #print('Can not load in variable')
+                pass
         print('Data loaded')
 
         self.vid = []

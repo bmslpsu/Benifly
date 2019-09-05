@@ -1,35 +1,40 @@
 
-from Benifly import MainWindow
-from fileimport import FileImport
 import time
+from Benifly import MainWindow
+from filemanager import FileManager
 
 # USER: set these variables
-#-----------------------------------------------------------------------------------------
-root = 'Q:/temp'  # folder with video files
-filespec = 'Fly_1_*.mat' # files to track
-targetdir = 'Q:/temp\out' # where to save output data & video
-vidname = 'vidData' # name of video variable in MATLAB .mat file (for .mat files only)
-#-----------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------
+# root = 'H:\EXPERIMENTS\Experiment_SOS_v2'  # folder with video files
+root = 'C:\Users/boc5244\Documents/temp'  # folder with video files
+targetdir = 'C:\Users/boc5244\Documents/temp/out' # where to save output data & video
+vidname = 'vidData' # name of video variable in MATLAB .mat file (does not apply to video other formats)
+#---------------------------------------------------------------------------------------
+
+FileSelect = FileManager() # create FileManager instance
+FileSelect.Select(root) # open file selection GUI in root folder
 
 Benifly = MainWindow() # create Benifly instance
-VID = FileImport() # create FileImport instance
-VID.get_files(root,filespec) # get all files that fit filespec in root
-print(VID.files)
 
-# Loop through and track all files (if running a Benifly.loop function, we will stay on the first file until stopped,
-# this is helpful for setting the mask before tracking & saving data)
-iCount = 1
-for f in VID.files:
-    print f
+print()
+print('Files to track:')
+print('-------------------------------------------')
+print(FileSelect.fname)
+print('-------------------------------------------')
+
+# Loop through and track all files
+for f in FileSelect.files:
+    print 'Tracking: ' , f
+
     # USER: uncomment method to use
     #---------------------------------------------------
+    # Benifly.loopMat(f, vidname)
+    # Benifly.loopVid(f)
+    # Benifly.runMat(f, vidname, targetdir)
+    # Benifly.runVid(f, targetdir)
     # Benifly.loopLive()
-    # Benifly.loopMat(root, f, vidname)
-    # Benifly.loopVid(root, f)
-    # Benifly.runMat(root, f, vidname, targetdir)
-    # Benifly.runVid(root, f, targetdir)
     #----------------------------------------------------
+
     time.sleep(2)
-    iCount+=1
 
 print('----------DONE----------')

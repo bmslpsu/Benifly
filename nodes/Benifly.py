@@ -1150,76 +1150,57 @@ class MainWindow():
                 print('No compatible video device ...')
                 break
 
-    def loopVid(self, root, file):
-        while (True):
-            cap = cv2.VideoCapture(os.path.join(root,file))
-            iCount = 1
-            while (cap.isOpened()):
-                ret, frame = cap.read()
-                if ret:
-                    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                    self.image_callback(gray)
-                    self.process_image()
-                else:
-                    break
-
-                iCount+=1
-                print(iCount)
-
-            cap.release()
-            cv2.destroyAllWindows()
-
-    def loopMat(self, root, file, vidname):
+    def loopMat(self, fullfile, vidname):
         self.vidfile = FileImport()
-        self.vidfile.get_matdata(root, file, vidname, '')
-
+        self.vidfile.get_matdata(fullfile, vidname)
         while True:
             for frame in range(self.vidfile.n_frame):
-                #print(frame)
                 data = self.vidfile.vid[frame,:,:].T
                 self.image_callback(data)
                 self.process_image()
-                #print(self.fly.head.state.angles[0])
 
-    def runMat(self, root, file, vidname, targetdir):
+    def runMat(self, fullfile, vidname, targetdir):
         self.vidfile = FileImport()
-        self.vidfile.get_matdata(root, file, vidname, targetdir)
+        self.vidfile.get_matdata(fullfile, vidname)
 
-        datapath = self.vidfile.targetpath + '.csv'
-        vidpath = self.vidfile.targetpath + '.avi'
-        header = "Left , Right , Head , Abdomen"
+        datapath = os.path.join(targetdir, self.vidfile.fname + '.csv')
+        vidpath  = os.path.join(targetdir, self.vidfile.fname + '.avi')
+        header = "Time, Head, LWing , RWing, Abdomen , WBF"
         with open(datapath, 'wb') as f:
             fourcc = cv2.VideoWriter_fourcc(*'MJPG')
             vidout = cv2.VideoWriter(vidpath, fourcc, 60, (self.vidfile.width, self.vidfile.height))
             np.savetxt(f, [], header=header, comments='')
             for frame in range(self.vidfile.n_frame):
-                #print(frame)
                 data = self.vidfile.vid[frame,:,:].T
-
                 self.image_callback(data)
                 self.process_image()
 
-                state = np.empty((1,4))
+                state = np.empty((1,6))
                 state[:] = np.nan
+                state[0] = frame
 
                 try:
-                    state[0,0] = self.fly.left.state.angles[0]
-                    #print(self.fly.head.state.angles[0])
+                    state[0,1] = self.fly.head.state.angles[0]
                 except IndexError:
                     pass
 
                 try:
-                    state[0,1] = self.fly.right.state.angles[0]
+                    state[0,2] = self.fly.left.state.angles[0]
                 except IndexError:
                     pass
 
                 try:
-                    state[0,2] = self.fly.head.state.angles[0]
+                    state[0,3] = self.fly.right.state.angles[0]
                 except IndexError:
                     pass
 
                 try:
-                    state[0,3] = self.fly.abdomen.state.angles[0]
+                    state[0,4] = self.fly.abdomen.state.angles[0]
+                except IndexError:
+                    pass
+
+                try:
+                    state[0,5] = self.fly.aux.state.intensity
                 except IndexError:
                     pass
 
@@ -1231,19 +1212,32 @@ class MainWindow():
             vidout.release()
             print('Tracking Complete')
 
+    def loopVid(self, fullfile):
+        while (True):
+            cap = cv2.VideoCapture(fullfile)
+            while (cap.isOpened()):
+                ret, frame = cap.read()
+                if ret:
+                    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                    self.image_callback(gray)
+                    self.process_image()
+                else:
+                    break
 
-    def runVid(self, root, file, targetdir):
+            cap.release()
+
+    def runVid(self, fullfile, targetdir):
         self.vidfile = FileImport()
-        self.vidfile.get_filedata(root, file, targetdir)
+        self.vidfile.get_filedata(fullfile)
 
-        datapath = self.vidfile.targetpath + '.csv'
-        vidpath = self.vidfile.targetpath + '.avi'
-        header = "Left , Right , Head , Abdomen"
+        datapath = os.path.join(targetdir, self.vidfile.fname + '.csv')
+        vidpath = os.path.join(targetdir, self.vidfile.fname + '.avi')
+        header = "Time, Head, LWing , RWing, Abdomen , WBF"
         with open(datapath, 'wb') as f:
             fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-            vidout = cv2.VideoWriter(vidpath, fourcc, 60, (self.vidfile.width, self.vidfile.height))
+            vidout = cv2.VideoWriter(vidpath, fourcc, 60, (480, 640))
             np.savetxt(f, [], header=header, comments='')
-            cap = cv2.VideoCapture(self.vidfile.filepath)
+            cap = cv2.VideoCapture(fullfile)
             iCount = 1
             while (cap.isOpened()):
                 ret, frame = cap.read()
@@ -1254,27 +1248,32 @@ class MainWindow():
                 else:
                     break
 
-                state = np.empty((1,4))
+                state = np.empty((1, 6))
                 state[:] = np.nan
+                state[0] = iCount
 
                 try:
-                    state[0,0] = self.fly.left.state.angles[0]
-                    #print(self.fly.head.state.angles[0])
+                    state[0, 1] = self.fly.head.state.angles[0]
                 except IndexError:
                     pass
 
                 try:
-                    state[0,1] = self.fly.right.state.angles[0]
+                    state[0, 2] = self.fly.left.state.angles[0]
                 except IndexError:
                     pass
 
                 try:
-                    state[0,2] = self.fly.head.state.angles[0]
+                    state[0, 3] = self.fly.right.state.angles[0]
                 except IndexError:
                     pass
 
                 try:
-                    state[0,3] = self.fly.abdomen.state.angles[0]
+                    state[0, 4] = self.fly.abdomen.state.angles[0]
+                except IndexError:
+                    pass
+
+                try:
+                    state[0, 5] = self.fly.aux.state.intensity
                 except IndexError:
                     pass
 
@@ -1287,22 +1286,10 @@ class MainWindow():
 
             f.close()
             vidout.release()
-
             cap.release()
             cv2.destroyAllWindows()
 
             print('Tracking Complete')
 
-if __name__ == '__main__':
-    main = MainWindow()
-
-    # root = 'H:\EXPERIMENTS\Experiment_SOS\Vid'
-    # file = 'fly_2_trial_3_SOS.mat'
-    # vidname = 'vidData'
-    # targetdir = 'C:\Users/boc5244\Documents/temp/out'
-
-    # main.loopLive()
-    # main.loopMat(root, file, vidname)
-    # main.loopVid(root, file)
-    # main.runMat(root, file, vidname, targetdir)
-    # main.runVid(root, file, targetdir)
+# if __name__ == '__main__':
+#     main = MainWindow()

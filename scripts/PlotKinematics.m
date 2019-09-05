@@ -18,11 +18,11 @@ plot(tt,filedata.Head, 'c', 'LineWidth',1)
 
 ax(2) = subplot(4,1,2) ; hold on ; title('Left')
 [filedata.Left] = hampel(tt,filedata.Left);
-plot(tt,filedata.Left, 'g', 'LineWidth',1)
+plot(tt,filedata.LWing, 'g', 'LineWidth',1)
 
 ax(3) = subplot(4,1,3) ; hold on ; title('Right')
 [filedata.Right] = hampel(tt,filedata.Right);
-plot(tt,filedata.Right, 'r', 'LineWidth',1)
+plot(tt,filedata.RWing, 'r', 'LineWidth',1)
 
 ax(4) = subplot(4,1,4) ; hold on ; title('Abdomen')
 plot(tt,filedata.Abdomen, 'm', 'LineWidth',1)
