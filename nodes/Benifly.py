@@ -1092,7 +1092,8 @@ class MainWindow():
                 elif (self.nameSelected == self.nameSelectedNow == 'aux'):
                     self.params['gui']['aux']['track'] = self.buttons[iButtonSelected].state
                     if (self.params['gui']['aux']['track']):
-                        self.fly.aux.wingbeat.warn()
+                        #self.fly.aux.wingbeat.warn()
+                        pass
 
                 # A button to allow the user to override the automatic invertcolor detector.  A better autodetect algorithm might eliminate the need for this.
                 elif (self.nameSelected == self.nameSelectedNow == 'invertcolor'):
@@ -1142,7 +1143,7 @@ class MainWindow():
                 self.image_callback(gray)
                 self.process_image()
             else:
-                print('No compatible video device ...')
+                print('No compatible video device ... exiting')
                 break
 
     def loopMat(self, fullfile, vidname):

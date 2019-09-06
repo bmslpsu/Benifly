@@ -29,10 +29,6 @@ class WingbeatDetector(object):
         
 
     def warn(self):
-        #rospy.logwarn('Note: The wingbeat detector is set to measure wingbeat frequencies in the ')
-        #rospy.logwarn('band [%0.1f, %0.1f] Hz.  To make a valid measurement, the camera ' % (self.fw_min, self.fw_max))
-        #rospy.logwarn('framerate must be in, and stay in, one of the following ranges:')
-        #rospy.logwarn(self.fs_dict['fs_range_list'])
         print('Note: The wingbeat detector is set to measure wingbeat frequencies in the ')
         print('band [%0.1f, %0.1f] Hz.  To make a valid measurement, the camera ' % (self.fw_min, self.fw_max))
         print('framerate must be in, and stay in, one of the following ranges:')
