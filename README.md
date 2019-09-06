@@ -72,7 +72,7 @@ The user can set the following variables:
 ## Troubleshooting
 If *Benifly* is returning any errors  similar to  "outside of range", "index", or "size" erros, this is most likely because you have a smaller sized video and the masks are set outside the pixel range. This error can occur in `Kinefly` as well. To solve this, edit the `params.json`: turn tracking off for all body parts & change the positions of the mask points to lie within your pixel range. This may be automated in the future. Alternatively, increasing the `scale_image` parameter can help in dealing with smaller sized videos.
 
-#####Example error:
+**Example error:**
 
  ![Output](image/MaskError.png)
 
