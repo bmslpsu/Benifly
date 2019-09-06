@@ -33,7 +33,7 @@ class FileImport:
         self.targetfile = os.path.join(self.path,self.fname)
 
         # Extract video data from .mat file
-        print('Loading data ...')
+        print('Loading data ...'),
         data = h5py.File(self.file, 'r')  # load file
         arrays = {}
         for k, v in data.items():
@@ -42,7 +42,7 @@ class FileImport:
             except:
                 #print('Can not load in variable')
                 pass
-        print('Data loaded')
+        print('done')
 
         self.vid = []
         try:

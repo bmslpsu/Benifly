@@ -1,7 +1,7 @@
 
 import os
-import tkinter
-from tkinter import filedialog
+import Tkinter
+import tkFileDialog as filedialog
 from operator import itemgetter
 
 class FileManager:
@@ -12,7 +12,7 @@ class FileManager:
         # Open file selection dialouge and let user select files, store file properties in object
         self.initialdir = initialdir # start up directory
 
-        self.window = tkinter.Tk() # initialize tkinter
+        self.window = Tkinter.Tk() # initialize tkinter
         self.window.withdraw() # close unecessary window
 
         # Open file selection GUI

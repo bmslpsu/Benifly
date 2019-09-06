@@ -56,7 +56,9 @@ The user can set the following variables:
  For both output files, `filename`  will be the same as the name of the video file fed to *Benifly*.
  
  ### Setting & Saving Parameters
- The `params.json` file in the *Benifly* root directory stores all startup information for the GUI and tracking methods. Everytime a parameter is changed in the Knefly GUI (such as a mask location), this information will be dumped to the file. The user can also edit this file to change parameters before startup. `.json` files are not especially readable/editable in text format, so  a `.json` [viewer](https://codebeautify.org/online-json-editor) may me helpful. If *Benifly* cannot find this file on startup, then default paramters will be used and a new `params.json` file will be created.
+ The `params.json` file in the *Benifly* root directory stores all startup information for the GUI and tracking methods. Everytime a parameter is changed in the Knefly GUI (such as a mask location), this information will be dumped to the file. The user can also edit this file to change parameters before startup. `.json` files are not especially readable/editable in text format, so  a `.json` [viewer](https://codebeautify.org/online-json-editor) may me helpful. If *Benifly* cannot find this file on startup, then default paramters will be used and a new `params.json` file will be created. 
+ 
+ A `params.json` file is included in the root folder for reference, but it is recommended that users delete this and create their own from defaults. This will prevent a few possible issues.
  
  ### Exiting the GUI
  **Do not** use the *X* in the top right corner. This will cause problems. Instead click the the exit button on the top left.
@@ -68,7 +70,12 @@ The user can set the following variables:
   * *Benifly's* wing-beat-frequency detcector (aux mask) will not return the true WBF becuase the play back rate is presumably not the same as the rate that the video was recorded.
 
 ## Troubleshooting
-* If *Benifly* is returning any errors  similar to  "outside of range" or "index error", this is most likely because you have a smaller sized video and the masks are set outside the pixel range. This error can occur in `Kinefly` as well. To solve this, edit the `params.json`: turn tracking off for all body parts & change the positions of the mask points to lie within your pixel range. This may be automated in the future. Alternatively, increasing the `scale_image` parameter can help in dealing with smaller sized videos.
+If *Benifly* is returning any errors  similar to  "outside of range", "index", or "size" erros, this is most likely because you have a smaller sized video and the masks are set outside the pixel range. This error can occur in `Kinefly` as well. To solve this, edit the `params.json`: turn tracking off for all body parts & change the positions of the mask points to lie within your pixel range. This may be automated in the future. Alternatively, increasing the `scale_image` parameter can help in dealing with smaller sized videos.
+
+#####Example error:
+
+ ![Output](image/MaskError.png)
+
 
  ## Other Resources
  The scripts folder includes the MATLAB function `ImportBenifly.m` to import *Benifly* generated .csv files into the MATLAB workspace, as well as an example script to call this function and plot the kinematic data (`PlotKinematics.m`)

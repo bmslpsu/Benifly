@@ -27,31 +27,30 @@ from MsgFlyState import Header
 ###############################################################################
 # class MainWindow()
 #
-# This is the main Benifly window, where we receive images from the camera/file,
+# This is the main window, where we receive images from the camera/file,
 # process them using the Fly class, and then output the results.
 #
 class MainWindow():
     def __init__(self):
-        print('')
-        print('**************************************************************************')
-        print('          Benifly: Tethered Insect Kinematics Analyzer')
-        print('                     by Ben Cellini, 2019')
-        print('**************************************************************************')
-        print('')
-
         # Initialize
         self.nodename  = MainWindow.__module__
         self.mainroot = os.path.dirname(os.path.dirname(imp.find_module(self.nodename)[1]))
+
+        print('\n**************************************************************************')
+        print('         ' + self.nodename + ': Tethered Insect Kinematics Analyzer')
+        print('                   by Benjamin Cellini, 2019')
+        print('**************************************************************************')
         print "Path to", self.nodename , ":", self.mainroot
 
         self.lockParams = threading.Lock()
         self.lockBuffer = threading.Lock()
-        self.background = os.path.join(self.mainroot,'image',self.nodename + '.png')
+        self.background = os.path.join(self.mainroot,'image', self.nodename + '.png')
 
         # Initialize display
         self.window_name = self.nodename.strip('/')
         cv2.namedWindow(self.window_name, 1)
-        # self.cvbridge = CvBridge()
+
+        # Initialize Parameters
         self.params = {}
         defaults = {'filenameBackground': self.background,
                     'image_topic': '/camera/image_raw',
@@ -137,17 +136,17 @@ class MainWindow():
                             }
                     }
 
+        # Try to get parameters from file
         try:
-            #self.params = pickle.load(open(self.mainroot + "\params.p", "rb"))
             with open(self.mainroot + "\params.json") as json_file:
                 self.params = json.load(json_file)
-                print('Loading Benifly parameters from file ...')
+                print('Loading parameters from file ...')
         except IOError:
             print('No saved parameters file ... using defaults')
 
+        # Set parameters from file if we have them
         SetDict().set_dict_with_preserve(self.params, defaults)
         self.params = self.legalizeParams(self.params)
-        # rospy.set_param(self.nodename+'/gui', self.params['gui'])
 
         self.scale = self.params['scale_image']
         self.bMousing = False
@@ -222,6 +221,8 @@ class MainWindow():
         rosimg = imgInitial
         self.image_callback(rosimg)
         self.bValidImage = False
+
+        print(self.nodename + ' Initalized \n')
 
     # Check the given button to see if it extends outside the image, and if so then reposition it to the next line.
     def wrap_button(self, btn, shape):
@@ -555,11 +556,8 @@ class MainWindow():
                 self.header.stamp = 1
                 self.header.frame_id = 1
                 #---------------------------------------------
-                #self.fly.set_params(self.params)
                 self.fly.update(self.header, self.imgScaled)
                 #---------------------------------------------
-                #print(self.fly.head.state.angles)
-                #self.fly.set_params(self.params)
 
                 # Publish the outputs.
                 self.start()
@@ -703,8 +701,8 @@ class MainWindow():
     #
     def save_background(self):
         print('Saving new background image ...')
-        cv2.imwrite(self.mainroot + '/image/' + 'Benifly.png', self.imgUnscaled)
-        cv2.imwrite(self.mainroot + '/image/' + 'BeniflyTracked.png', self.imgOutput)
+        cv2.imwrite(self.mainroot + '/image/' + self.nodename + '.png', self.imgUnscaled)
+        cv2.imwrite(self.mainroot + '/image/' + self.nodename + 'Tracked.png', self.imgOutput)
         self.fly.set_background(self.imgScaled)
         self.bHaveBackground = True
 
@@ -1038,7 +1036,7 @@ class MainWindow():
                     self.save_background()
 
                 elif (self.nameSelected == self.nameSelectedNow == 'exit'):
-                    sys.exit('Exit Benifly ...')
+                    sys.exit('Exit ' + self.nodename + ' ...')
 
 
             elif (self.uiSelected == 'checkbox'):
@@ -1116,8 +1114,6 @@ class MainWindow():
                 self.fly.create_masks(self.shapeImage)
 
             with self.lockParams:
-                #pickle.dump(self.params, open( self.mainroot + "\params.p", "wb" ) )
-
                 with open(self.mainroot + "\params.json", 'w') as outfile:
                     json.dump(self.params, outfile)
 
@@ -1209,7 +1205,7 @@ class MainWindow():
 
             f.close()
             vidout.release()
-            print('Tracking Complete')
+            print('Tracking Complete \n')
 
     def loopVid(self, fullfile):
         while (True):

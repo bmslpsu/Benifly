@@ -16,11 +16,11 @@ FileSelect.Select(root) # open file selection GUI in root folder
 
 Benifly = MainWindow() # create Benifly instance
 
-print()
 print('Files to track:')
-print('-------------------------------------------')
-print(FileSelect.fname)
-print('-------------------------------------------')
+print('-------------------------------------')
+for f in FileSelect.basename:
+    print(f)
+print('-------------------------------------\n')
 
 # Loop through and track all files
 for f in FileSelect.files:
@@ -35,6 +35,6 @@ for f in FileSelect.files:
     # Benifly.loopLive()
     #----------------------------------------------------
 
-    time.sleep(2)
+    time.sleep(1)
 
 print('----------DONE----------')
