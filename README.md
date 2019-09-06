@@ -37,7 +37,7 @@ The user can set the following variables:
  Will continuously track a MATLAB  `.mat` video in a file located in the `root` with filename `file` until stopped by the user. There is no output, which is useful for setting masks & other parameters before tracking. The input parameter `vidname` must be the MATLAB variable that the video is stored under. Note that the video must be in grayscale form (3D matrix).
  
   #### 2. `runMat(root, file, vidname, targetdir, fps)`
- Works just like like `matLoop()`, but will track a video stored in a `.mat` file **and** output data to the `targetdir`(tracking only runs once & is no longer continuous). The last input `fps` is optional, and sets the frames per second of the output video (default=60).
+ Works just like like `loopMat()`, but will track a video stored in a `.mat` file **and** output data to the `targetdir`(tracking only runs once & is no longer continuous). The last input `fps` is optional, and sets the frames per second of the output video (default=60).
   
   #### 3. `loopVid(root, file)`
  Works just like like `loopMat()`, but takes a video format file (`.avi`, .`mp4`, `.mov`, etc.) instead of a `.mat` file.
