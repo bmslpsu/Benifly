@@ -1156,6 +1156,7 @@ class MainWindow():
                 self.process_image()
 
     def runMat(self, fullfile, vidname, targetdir, fps=60):
+        del self.vidfile
         self.vidfile = FileImport()
         self.vidfile.get_matdata(fullfile, vidname)
 
@@ -1223,6 +1224,7 @@ class MainWindow():
             cap.release()
 
     def runVid(self, fullfile, targetdir, fps=60):
+        del self.vidfile
         self.vidfile = FileImport()
         self.vidfile.get_filedata(fullfile)
 
