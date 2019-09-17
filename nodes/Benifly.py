@@ -1155,6 +1155,9 @@ class MainWindow():
                 self.image_callback(data)
                 self.process_image()
 
+                #if cv2.waitKey(1) & 0xFF == ord('w'):
+                    #raw_input("Press Enter to continue...")
+
     def runMat(self, fullfile, vidname, targetdir, fps=60):
         try:
             del self.vidfile

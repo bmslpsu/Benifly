@@ -5,11 +5,9 @@ from filemanager import FileManager
 
 # USER: set these variables
 #---------------------------------------------------------------------------------------
-# root = 'Q:/temp'  # folder with video files
-# targetdir = 'Q:/temp/out' # where to save output data & video
-root = 'H:\EXPERIMENTS\Experiment_SOS\Vid'  # folder with video files
-targetdir = 'C:\Users/boc5244\Documents/temp/out' # where to save output data & video
-vidname = 'vidData' # name of video variable in MATLAB .mat file (does not apply to video other formats)
+root = 'E:\Walking_Experiments\SOS\mat'  # folder with video files
+targetdir = 'E:\Walking_Experiments\SOS\mat\Retrack' # where to save output data & video
+vidname = 'rawVid' # name of video variable in MATLAB .mat file (does not apply to video other formats)
 fps = 60 # output frame rate in Hz (not required)
 #---------------------------------------------------------------------------------------
 
@@ -30,9 +28,9 @@ for f in FileSelect.files:
 
     # USER: uncomment method to use
     #---------------------------------------------------
-    # Benifly.loopMat(f, vidname)
+    Benifly.loopMat(f, vidname)
     # Benifly.loopVid(f)
-    Benifly.runMat(f, vidname, targetdir, fps)
+    # Benifly.runMat(f, vidname, targetdir, fps)
     # Benifly.runVid(f, targetdir, fps)
     # Benifly.loopLive()
     #----------------------------------------------------
