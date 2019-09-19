@@ -50,7 +50,7 @@ The user can set the following variables:
  
  ### Output
  *Benifly* methods that save data (`runMat()`,`runVid()`) output two files:
- * `filename.csv`: contains the head, abdomen, aux, and left & right wing angles for all frames of the input video. There are other outputs from *Benifly* that are not currently designed to be saved, such as the radii & gradients for each body part.
+ * `filename.csv`: contains the head, abdomen, aux, and left & right wing angles for all frames of the input video. Outputs that are not set to be tracked default to `nan`. There are other *Benifly* variables that are not currently designed to be saved, such as the radii & gradients for each body part.
  * `filename.avi`: the saved *Binefly* video feed with tracking illustrations (default frame rate is 60Hz)
  
  For both output files, `filename`  will be the same as the name of the video file fed to *Benifly*.

@@ -1181,7 +1181,7 @@ class MainWindow():
 
                 state = np.empty((1,6))
                 state[:] = np.nan
-                state[0] = frame
+                state[0, 0] = frame
 
                 try:
                     state[0,1] = self.fly.head.state.angles[0]
@@ -1261,7 +1261,7 @@ class MainWindow():
 
                 state = np.empty((1, 6))
                 state[:] = np.nan
-                state[0] = iCount
+                state[0, 0] = iCount
 
                 try:
                     state[0, 1] = self.fly.head.state.angles[0]
