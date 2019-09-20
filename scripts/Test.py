@@ -8,7 +8,6 @@ from filemanager import FileManager
 root = 'H:\EXPERIMENTS\Experiment_SOS\Vid'  # folder with video files
 targetdir = 'C:\Users/boc5244\Documents/temp\out' # where to save output data & video
 vidname = 'vidData' # name of video variable in MATLAB .mat file (does not apply to video other formats)
-fps = 60 # output frame rate in Hz (not required)
 #---------------------------------------------------------------------------------------
 
 FileSelect = FileManager() # create FileManager instance
@@ -30,8 +29,8 @@ for f in FileSelect.files:
     #---------------------------------------------------
     # Benifly.loopMat(f, vidname)
     # Benifly.loopVid(f)
-    Benifly.runMat(f, vidname, targetdir, fps)
-    # Benifly.runVid(f, targetdir, fps)
+    Benifly.runMat(f, vidname, targetdir)
+    # Benifly.runVid(f, targetdir)
     # Benifly.loopLive()
     #----------------------------------------------------
 

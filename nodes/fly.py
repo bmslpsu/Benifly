@@ -30,13 +30,13 @@ class Fly(object):
 
         # Create the head tracker.
         if (params['head']['tracker']=='area'):
-            self.head    = AreaTracker(name='head',      params=params, color='cyan',    bEqualizeHist=False)
+            self.head    = AreaTracker(name='head',      params=params, color='purple',    bEqualizeHist=False)
         elif (params['head']['tracker']=='edge'):
-            self.head    = EdgeTracker(name='head',      params=params, color='cyan',    bEqualizeHist=False)
+            self.head    = EdgeTracker(name='head',      params=params, color='purple',    bEqualizeHist=False)
         elif (params['head']['tracker']=='tip'):
-            self.head    = TipTracker(name='head',       params=params, color='cyan',    bEqualizeHist=False)
+            self.head    = TipTracker(name='head',       params=params, color='purple',    bEqualizeHist=False)
         elif (params['head']['tracker']=='intensity'):
-            self.head    = IntensityTracker(name='head', params=params, color='cyan',    bEqualizeHist=False)
+            self.head    = IntensityTracker(name='head', params=params, color='purple',    bEqualizeHist=False)
         else:
             #rospy.logwarn('Head tracker parameter must be one of [''area'', ''edge'', ''tip'', ''intensity'']')
             print('Head tracker parameter must be one of [''area'', ''edge'', ''tip'', ''intensity'']')
@@ -56,26 +56,26 @@ class Fly(object):
 
         # Create the right wing tracker.        
         if (params['right']['tracker']=='area'):
-            self.right    = AreaTracker(name='right',      params=params, color='red',    bEqualizeHist=False)
+            self.right    = AreaTracker(name='right',      params=params, color='hot_pink',    bEqualizeHist=False)
         elif (params['right']['tracker']=='edge'):
-            self.right    = EdgeTracker(name='right',      params=params, color='red',    bEqualizeHist=False)
+            self.right    = EdgeTracker(name='right',      params=params, color='hot_pink',    bEqualizeHist=False)
         elif (params['right']['tracker']=='tip'):
-            self.right    = TipTracker(name='right',       params=params, color='red',    bEqualizeHist=False)
+            self.right    = TipTracker(name='right',       params=params, color='hot_pink',    bEqualizeHist=False)
         elif params['right']['tracker']== 'intensity':
-            self.right    = IntensityTracker(name='right', params=params, color='red',    bEqualizeHist=False)
+            self.right    = IntensityTracker(name='right', params=params, color='hot_pink',    bEqualizeHist=False)
         else:
             #rospy.logwarn('Right wing tracker parameter must be one of [''area'', ''edge'', ''tip'', ''intensity'']')
             print('Right wing tracker parameter must be one of [''area'', ''edge'', ''tip'', ''intensity'']')
              
         # Create the left wing tracker.        
         if (params['left']['tracker']=='area'):
-            self.left    = AreaTracker(name='left',      params=params, color='green',    bEqualizeHist=False)
+            self.left    = AreaTracker(name='left',      params=params, color='orange',    bEqualizeHist=False)
         elif (params['left']['tracker']=='edge'):
-            self.left    = EdgeTracker(name='left',      params=params, color='green',    bEqualizeHist=False)
+            self.left    = EdgeTracker(name='left',      params=params, color='orange',    bEqualizeHist=False)
         elif (params['left']['tracker']=='tip'):
-            self.left    = TipTracker(name='left',       params=params, color='green',    bEqualizeHist=False)
+            self.left    = TipTracker(name='left',       params=params, color='orange',    bEqualizeHist=False)
         elif (params['left']['tracker']=='intensity'):
-            self.left    = IntensityTracker(name='left', params=params, color='green',    bEqualizeHist=False)
+            self.left    = IntensityTracker(name='left', params=params, color='orange',    bEqualizeHist=False)
         else:
             #rospy.logwarn('Left wing tracker parameter must be one of [''area'', ''edge'', ''tip'', ''intensity'']')
             print('Left wing tracker parameter must be one of [''area'', ''edge'', ''tip'', ''intensity'']')

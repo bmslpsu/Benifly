@@ -36,13 +36,13 @@ The user can set the following variables:
  #### 1. `loopMat(root, file, vidname)` 
  Will continuously track a MATLAB  `.mat` video in a file located in the `root` with filename `file` until stopped by the user. There is no output, which is useful for setting masks & other parameters before tracking. The input parameter `vidname` must be the MATLAB variable that the video is stored under. Note that the video must be in grayscale form (3D matrix).
  
-  #### 2. `runMat(root, file, vidname, targetdir, fps)`
- Works just like like `loopMat()`, but will track a video stored in a `.mat` file **and** output data to the `targetdir`(tracking only runs once & is no longer continuous). The last input `fps` is optional, and sets the frames per second of the output video (default=60).
+  #### 2. `runMat(root, file, vidname, targetdir)`
+ Works just like like `loopMat()`, but will track a video stored in a `.mat` file **and** output data to the `targetdir`(tracking only runs once & is no longer continuous).
   
   #### 3. `loopVid(root, file)`
  Works just like like `loopMat()`, but takes a video format file (`.avi`, .`mp4`, `.mov`, etc.) instead of a `.mat` file.
  
-  #### 4. `runVid(root, file, vidname, targetdir, fps)`
+  #### 4. `runVid(root, file, vidname, targetdir)`
  Works just like like `runMat()`, but takes a video format file (`.avi`, .`mp4`, `.mov`, etc.) instead of a `.mat` file.
  
   #### 5. `loopLive()`
@@ -63,6 +63,9 @@ The user can set the following variables:
  ### Exiting the GUI
  **Do not** use the *X* in the top right corner. This will cause problems. Instead click the the exit button on the top left.
  
+ ### General Notes
+  The paramter `output_fps` sets the frames per second of the output video (default=60).
+ 
  ## Benifly vs Kinefly
   * *Kinefly* ROS commands (help, gui_on, gui_off, exit) are not functional.
   * *Kinefly's* data visualization & performance tracking services are currently unavaiable, but this may change in the future.
@@ -82,7 +85,7 @@ If *Benifly* is returning any errors  similar to  "outside of range", "index", o
   
  ## Examples
  #### Input Frame:
- A frame from a video of a rigidly tethered fruit fly (*Drosophila melanogaster*) in a visual motor task.
+ A frame from a video of a rigidly tethered fruit fly (*Drosophila melanogaster*) in a visuomotor task.
  
  ![Input](image/Benifly.png)
  

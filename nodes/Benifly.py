@@ -48,7 +48,6 @@ class MainWindow():
 
         # Initialize display
         self.window_name = self.nodename.strip('/')
-        cv2.namedWindow(self.window_name, 1)
 
         # Initialize Parameters
         self.params = {}
@@ -61,6 +60,7 @@ class MainWindow():
                     'rc_background': 1000.0,  # Time constant of the moving average background.
                     'wingbeat_min': 180,  # Bounds for wingbeat frequency measurement.
                     'wingbeat_max': 220,
+                    'out_fps': 60, # saved video frame rate [fps]
                     'head': {'tracker': 'area',
                              'autozero': True,  # Automatically figure out where the center of motion is.
                              'threshold': 0.0,
@@ -138,7 +138,7 @@ class MainWindow():
 
         # Try to get parameters from file
         try:
-            with open(self.mainroot + "\params.json") as json_file:
+            with open(os.path.join(self.mainroot,"params.json")) as json_file:
                 self.params = json.load(json_file)
                 print('Loading parameters from file ...')
         except IOError:
@@ -155,6 +155,11 @@ class MainWindow():
         # Create the fly.
         self.fly = Fly(self.params)
         self.fly.set_params(self.params)
+
+        # Open image window.
+        if self.params['use_gui']:
+            cv2.namedWindow(self.window_name, 1)
+            cv2.resizeWindow(self.window_name, 50, 50)
 
         # Background image.
         self.filenameBackground = os.path.expanduser(self.params['filenameBackground'])
@@ -200,7 +205,8 @@ class MainWindow():
         self.h_gap = int(5 * self.scale)
         self.w_gap = int(10 * self.scale)
         self.scaleText = 0.4 * self.scale
-        self.fontface = cv2.FONT_HERSHEY_SIMPLEX
+        #self.fontface = cv2.FONT_HERSHEY_SIMPLEX
+        self.fontface = cv2.FONT_HERSHEY_DUPLEX
         self.buttons = None
         self.yToolbar = 0
         self.shapeToolbar = (0, 0)
@@ -1158,12 +1164,7 @@ class MainWindow():
                 #if cv2.waitKey(1) & 0xFF == ord('w'):
                     #raw_input("Press Enter to continue...")
 
-    def runMat(self, fullfile, vidname, targetdir, fps=60):
-        try:
-            del self.vidfile
-        except:
-            pass
-
+    def runMat(self, fullfile, vidname, targetdir):
         self.vidfile = FileImport()
         self.vidfile.get_matdata(fullfile, vidname)
 
@@ -1171,9 +1172,11 @@ class MainWindow():
         vidpath  = os.path.join(targetdir, self.vidfile.fname + '.avi')
         header = "Frame, Head, LeftWing , RightWing, Abdomen , Aux"
         with open(datapath, 'wb') as f:
-            fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-            vidout = cv2.VideoWriter(vidpath, fourcc, fps, (self.vidfile.width, self.vidfile.height))
+            if self.params['use_gui']:
+                fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+                vidout = cv2.VideoWriter(vidpath, fourcc, self.params['out_fps'], (self.vidfile.width, self.vidfile.height))
             np.savetxt(f, [], header=header, comments='')
+            start_time = time.time()
             for frame in range(self.vidfile.n_frame):
                 data = self.vidfile.vid[frame,:,:].T
                 self.image_callback(data)
@@ -1210,11 +1213,13 @@ class MainWindow():
 
                 np.savetxt(f, state, delimiter=',')
 
-                vidout.write(self.imgOutput)
+                if self.params['use_gui']:
+                    vidout.write(self.imgOutput)
 
             f.close()
-            vidout.release()
-            print('Tracking Complete \n')
+            if self.params['use_gui']:
+                vidout.release()
+            print("Tracking Complete: %5.3fs elapsed"% (time.time() - start_time) )
 
     def loopVid(self, fullfile):
         while (True):
@@ -1230,12 +1235,7 @@ class MainWindow():
 
             cap.release()
 
-    def runVid(self, fullfile, targetdir, fps=60):
-        try:
-            del self.vidfile
-        except:
-            pass
-
+    def runVid(self, fullfile, targetdir):
         self.vidfile = FileImport()
         self.vidfile.get_filedata(fullfile)
 
@@ -1244,12 +1244,14 @@ class MainWindow():
         header = "Frame, Head, LeftWing , RightWing, Abdomen , Aux"
         with open(datapath, 'wb') as f:
             cap = cv2.VideoCapture(fullfile)
-            frame_width  = int(cap.get(3))
-            frame_height = int(cap.get(4))
-            fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-            vidout = cv2.VideoWriter(vidpath, fourcc, fps, (frame_width, frame_height))
+            if self.params['use_gui']:
+                frame_width  = int(cap.get(3))
+                frame_height = int(cap.get(4))
+                fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+                vidout = cv2.VideoWriter(vidpath, fourcc, self.params['out_fps'], (frame_width, frame_height))
             np.savetxt(f, [], header=header, comments='')
             iCount = 1
+            start_time = time.time()
             while (cap.isOpened()):
                 ret, frame = cap.read()
                 if ret:
@@ -1289,18 +1291,19 @@ class MainWindow():
                     pass
 
                 np.savetxt(f, state, delimiter=',')
-
-                vidout.write(self.imgOutput)
+                if self.params['use_gui']:
+                    vidout.write(self.imgOutput)
 
                 iCount+=1
                 print(iCount)
 
             f.close()
-            vidout.release()
+            if self.params['use_gui']:
+                vidout.release()
             cap.release()
             cv2.destroyAllWindows()
 
-            print('Tracking Complete')
+            print("Tracking Complete: %5.3fs elapsed" % (time.time() - start_time))
 
 # if __name__ == '__main__':
 #     main = MainWindow()
