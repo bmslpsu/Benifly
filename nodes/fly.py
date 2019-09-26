@@ -26,41 +26,41 @@ class Fly(object):
 
 
         # Create the body axis tracker.
-        self.axis        = AxisTracker(name='axis',      params=params, color='yellow')
+        self.axis        = AxisTracker(name='axis',      params=params, color='cyan')
 
         # Create the head tracker.
         if (params['head']['tracker']=='area'):
-            self.head    = AreaTracker(name='head',      params=params, color='purple',    bEqualizeHist=False)
+            self.head    = AreaTracker(name='head',      params=params, color='green',    bEqualizeHist=False)
         elif (params['head']['tracker']=='edge'):
-            self.head    = EdgeTracker(name='head',      params=params, color='purple',    bEqualizeHist=False)
+            self.head    = EdgeTracker(name='head',      params=params, color='red',    bEqualizeHist=False)
         elif (params['head']['tracker']=='tip'):
             self.head    = TipTracker(name='head',       params=params, color='purple',    bEqualizeHist=False)
         elif (params['head']['tracker']=='intensity'):
-            self.head    = IntensityTracker(name='head', params=params, color='purple',    bEqualizeHist=False)
+            self.head    = IntensityTracker(name='head', params=params, color='hot_pink',    bEqualizeHist=False)
         else:
             #rospy.logwarn('Head tracker parameter must be one of [''area'', ''edge'', ''tip'', ''intensity'']')
             print('Head tracker parameter must be one of [''area'', ''edge'', ''tip'', ''intensity'']')
-             
+
         # Create the abdomen tracker.
         if (params['abdomen']['tracker']=='area'):
-            self.abdomen    = AreaTracker(name='abdomen',      params=params, color='magenta',    bEqualizeHist=False)
+            self.abdomen    = AreaTracker(name='abdomen',      params=params, color='green',    bEqualizeHist=False)
         elif (params['abdomen']['tracker']=='edge'):
-            self.abdomen    = EdgeTracker(name='abdomen',      params=params, color='magenta',    bEqualizeHist=False)
+            self.abdomen    = EdgeTracker(name='abdomen',      params=params, color='red',    bEqualizeHist=False)
         elif (params['abdomen']['tracker']=='tip'):
-            self.abdomen    = TipTracker(name='abdomen',       params=params, color='magenta',    bEqualizeHist=False)
+            self.abdomen    = TipTracker(name='abdomen',       params=params, color='purple',    bEqualizeHist=False)
         elif (params['abdomen']['tracker']=='intensity'):
-            self.abdomen    = IntensityTracker(name='abdomen', params=params, color='magenta',    bEqualizeHist=False)
+            self.abdomen    = IntensityTracker(name='abdomen', params=params, color='hot_pink',    bEqualizeHist=False)
         else:
             #rospy.logwarn('Abdomen tracker parameter must be one of [''area'', ''edge'', ''tip'', ''intensity'']')
              print('Abdomen tracker parameter must be one of [''area'', ''edge'', ''tip'', ''intensity'']')
 
         # Create the right wing tracker.        
         if (params['right']['tracker']=='area'):
-            self.right    = AreaTracker(name='right',      params=params, color='hot_pink',    bEqualizeHist=False)
+            self.right    = AreaTracker(name='right',      params=params, color='green',    bEqualizeHist=False)
         elif (params['right']['tracker']=='edge'):
-            self.right    = EdgeTracker(name='right',      params=params, color='hot_pink',    bEqualizeHist=False)
+            self.right    = EdgeTracker(name='right',      params=params, color='red',    bEqualizeHist=False)
         elif (params['right']['tracker']=='tip'):
-            self.right    = TipTracker(name='right',       params=params, color='hot_pink',    bEqualizeHist=False)
+            self.right    = TipTracker(name='right',       params=params, color='purple',    bEqualizeHist=False)
         elif params['right']['tracker']== 'intensity':
             self.right    = IntensityTracker(name='right', params=params, color='hot_pink',    bEqualizeHist=False)
         else:
@@ -69,13 +69,13 @@ class Fly(object):
              
         # Create the left wing tracker.        
         if (params['left']['tracker']=='area'):
-            self.left    = AreaTracker(name='left',      params=params, color='orange',    bEqualizeHist=False)
+            self.left    = AreaTracker(name='left',      params=params, color='green',    bEqualizeHist=False)
         elif (params['left']['tracker']=='edge'):
-            self.left    = EdgeTracker(name='left',      params=params, color='orange',    bEqualizeHist=False)
+            self.left    = EdgeTracker(name='left',      params=params, color='red',    bEqualizeHist=False)
         elif (params['left']['tracker']=='tip'):
-            self.left    = TipTracker(name='left',       params=params, color='orange',    bEqualizeHist=False)
+            self.left    = TipTracker(name='left',       params=params, color='purple',    bEqualizeHist=False)
         elif (params['left']['tracker']=='intensity'):
-            self.left    = IntensityTracker(name='left', params=params, color='orange',    bEqualizeHist=False)
+            self.left    = IntensityTracker(name='left', params=params, color='hot_pink',    bEqualizeHist=False)
         else:
             #rospy.logwarn('Left wing tracker parameter must be one of [''area'', ''edge'', ''tip'', ''intensity'']')
             print('Left wing tracker parameter must be one of [''area'', ''edge'', ''tip'', ''intensity'']')

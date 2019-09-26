@@ -27,9 +27,9 @@ for f in FileSelect.files:
 
     # USER: uncomment method to use
     #---------------------------------------------------
-    # Benifly.loopMat(f, vidname)
+    Benifly.loopMat(f, vidname)
     # Benifly.loopVid(f)
-    Benifly.runMat(f, vidname, targetdir)
+    # Benifly.runMat(f, vidname, targetdir)
     # Benifly.runVid(f, targetdir)
     # Benifly.loopLive()
     #----------------------------------------------------
