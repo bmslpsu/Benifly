@@ -968,7 +968,7 @@ class MainWindow():
             paramsScaled['gui'][partnameSelected]['angle'] = float(np.arctan2(pt[1], pt[0]) - np.pi / 2.0)
             bodypartSelected.bValidMask = False
 
-            # Unscale the parameters since we're finished adjusting them.
+        # Unscale the parameters since we're finished adjusting them.
         self.params = self.scale_params(paramsScaled, 1 / self.scale)
 
     # End update_params_from_mouse()

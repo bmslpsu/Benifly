@@ -1,0 +1,56 @@
+
+from __future__ import print_function
+import cv2
+import numpy as np
+
+from fileimport import FileImport
+from filemanager import FileManager
+
+class IMregister(object):
+    def __init__(self, vidpath, vidname):
+        self.vidpath = vidpath
+        self.vidname = vidname
+        self.filedata = FileImport()
+        self.filedata.get_filedata(self.vidpath)
+        self.vid = np.array(0)
+
+        if (self.filedata.ext.lower() == ".mat"):
+            self.filedata.get_matdata(self.vidpath, self.vidname)
+        elif (self.filedata.ext.lower() == ".avi") or (self.filedata.ext.lower() == ".mp4") or (self.filedata.ext.lower() == ".mov"):
+            self.ReadVid()
+        print()
+
+    def ReadVid(self):
+        cap = cv2.VideoCapture(self.vidpath)
+        idx = 0
+        while cap.isOpened():
+            ret, frame = cap.read()
+
+            if ret:
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                if idx==0:
+                    self.vid = np.zeros((5,gray.shape[0],gray.shape[1]))
+
+                self.vid[idx,:,:] = gray
+            else:
+                break
+            idx += 1
+            cv2.imshow('frame', gray)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+        cap.release()
+        cv2.destroyAllWindows()
+
+if __name__ == '__main__':
+    # vidpath_1 = "C:\Users/boc5244\Documents/temp/test.mat"
+    # vidpath_1 = "C:\Users/boc5244\Documents/temp/fly_1_trial_2_CW.mat"
+    # vidpath_1 = "C:\Users/boc5244\Documents/temp\RegVid.MOV"
+    vidname_1 = "vidData"
+    root = "C:\Users/boc5244\Documents/temp"
+    FileSelect = FileManager()  # create FileManager instance
+    FileSelect.Select(root)  # open file selection GUI in root folder
+
+    test = IMregister(FileSelect.files[0],vidname_1)
+
+    print('DONE')

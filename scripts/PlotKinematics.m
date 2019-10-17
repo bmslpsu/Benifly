@@ -32,5 +32,5 @@ plot(tt, filedata.WBF, 'y', 'LineWidth', 1)
 xlabel('Time')
 
 set(ax,'XLim',[0 tt(end)])
-set(ax,'YTick',[])
+% set(ax,'YTick',[])
 set(ax(1:end-1),'XTickLabels','')
