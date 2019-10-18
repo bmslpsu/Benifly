@@ -13,31 +13,93 @@ class IMregister(object):
         self.filedata = FileImport()
         self.filedata.get_filedata(self.vidpath)
         self.vid = np.array(0)
+        self.max_features = 500
+        self.good_match_percent = 0.15
 
+        print("Video loading..."),
         if (self.filedata.ext.lower() == ".mat"):
             self.filedata.get_matdata(self.vidpath, self.vidname)
         elif (self.filedata.ext.lower() == ".avi") or (self.filedata.ext.lower() == ".mp4") or (self.filedata.ext.lower() == ".mov"):
             self.ReadVid()
-        print()
+        print("Video loaded")
+
+        im1Reg, h = self.alignImages(self.vid[100,:,:],self.vid[1,:,:])
+
+        cv2.namedWindow('Reference', cv2.WINDOW_NORMAL)
+        cv2.imshow('Reference', self.vid[100,:,:])
+
+        cv2.namedWindow('Offset', cv2.WINDOW_NORMAL)
+        cv2.imshow('Offset', self.vid[1,:,:])
+
+        cv2.namedWindow('Registered', cv2.WINDOW_NORMAL)
+        cv2.imshow('Registered', im1Reg)
+        cv2.waitKey(0)
+
+
+
+    def alignImages(self,im1,im2):
+        # Convert images to grayscale
+        #im1Gray = cv2.cvtColor(im1, cv2.COLOR_BGR2GRAY)
+        #im2Gray = cv2.cvtColor(im2, cv2.COLOR_BGR2GRAY)
+        im1Gray = im1
+        im2Gray = im2
+
+        # Detect ORB features and compute descriptors.
+        orb = cv2.ORB_create(self.max_features)
+        keypoints1, descriptors1 = orb.detectAndCompute(im1Gray, None)
+        keypoints2, descriptors2 = orb.detectAndCompute(im2Gray, None)
+
+        # Match features.
+        matcher = cv2.DescriptorMatcher_create(cv2.DESCRIPTOR_MATCHER_BRUTEFORCE_HAMMING)
+        matches = matcher.match(descriptors1, descriptors2, None)
+
+        # Sort matches by score
+        matches.sort(key=lambda x: x.distance, reverse=False)
+
+        # Remove not so good matches
+        numGoodMatches = int(len(matches) * self.good_match_percent)
+        matches = matches[:numGoodMatches]
+
+        # Draw top matches
+        imMatches = cv2.drawMatches(im1, keypoints1, im2, keypoints2, matches, None)
+        cv2.imwrite("matches.jpg", imMatches)
+
+        # Extract location of good matches
+        points1 = np.zeros((len(matches), 2), dtype=np.float32)
+        points2 = np.zeros((len(matches), 2), dtype=np.float32)
+
+        for i, match in enumerate(matches):
+            points1[i, :] = keypoints1[match.queryIdx].pt
+            points2[i, :] = keypoints2[match.trainIdx].pt
+
+        # Find homography
+        h, mask = cv2.findHomography(points1, points2, cv2.RANSAC)
+
+        # Use homography
+        height, width, channels = im2.shape
+        im1Reg = cv2.warpPerspective(im1, h, (width, height))
+
+        return im1Reg, h
 
     def ReadVid(self):
         cap = cv2.VideoCapture(self.vidpath)
+        frameCount = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        frameWidth = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        frameHeight = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        self.vid = np.empty((frameCount, frameHeight, frameWidth), np.dtype('uint8'))
         idx = 0
         while cap.isOpened():
             ret, frame = cap.read()
 
             if ret:
                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                if idx==0:
-                    self.vid = np.zeros((5,gray.shape[0],gray.shape[1]))
-
                 self.vid[idx,:,:] = gray
             else:
                 break
             idx += 1
-            cv2.imshow('frame', gray)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            # cv2.imshow('frame', gray)
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     break
 
         cap.release()
         cv2.destroyAllWindows()
