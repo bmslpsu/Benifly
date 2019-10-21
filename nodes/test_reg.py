@@ -2,9 +2,9 @@
 from __future__ import print_function
 import cv2
 import numpy as np
+import os
 
 from fileimport import FileImport
-from filemanager import FileManager
 
 class IMregister(object):
     def __init__(self, vidpath, vidname):
@@ -15,27 +15,59 @@ class IMregister(object):
         self.vid = np.array(0)
         self.max_features = 500
         self.good_match_percent = 0.15
+        self.frame_height = 0
+        self.frame_width = 0
+        self.frame_count = 0
+        self.fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+        self.vidout = []
+        self.fs = 60
+        self.regvidpath = []
 
         print("Video loading..."),
         if (self.filedata.ext.lower() == ".mat"):
             self.filedata.get_matdata(self.vidpath, self.vidname)
+            self.vid = self.filedata.vid
+            self.frame_height = self.filedata.height
+            self.frame_width = self.filedata.width
+            self.frame_count = self.filedata.n_frame
         elif (self.filedata.ext.lower() == ".avi") or (self.filedata.ext.lower() == ".mp4") or (self.filedata.ext.lower() == ".mov"):
             self.ReadVid()
         print("Video loaded")
+        self.regvid = np.empty((self.frame_count, self.frame_width, self.frame_height), np.dtype('uint8'))
+        self.h = np.empty((self.frame_count,3,3), np.dtype('int8'))
 
-        im1Reg, h = self.alignImages(self.vid[100,:,:],self.vid[1,:,:])
+        self.alignVid()
+        self.displayVid()
 
-        cv2.namedWindow('Reference', cv2.WINDOW_NORMAL)
-        cv2.imshow('Reference', self.vid[100,:,:])
+    def saveVid(self,path,fs):
+        self.regvidpath = os.path.join(path,self.filedata.fname + ".avi")
+        self.fs = fs
+        self.vidout = cv2.VideoWriter(self.regvidpath, self.fourcc, fs, (self.frame_width,  self.frame_height))
+        print("Saving ",self.frame_count," frames...")
+        for frame in range(self.frame_count):
+                self.vidout.write(self.regvid[frame,:,:])
+        self. vidout.release()
+        print("Registered video saved: " + self.regvidpath)
 
-        cv2.namedWindow('Offset', cv2.WINDOW_NORMAL)
-        cv2.imshow('Offset', self.vid[1,:,:])
+    def displayVid(self):
+        cv2.namedWindow('Montage', cv2.WINDOW_NORMAL)
+        for frame in range(self.frame_count):
+            display = np.hstack((self.vid[frame,:,:], self.regvid[frame,:,:],))
+            cv2.imshow('Montage', display)
+            cv2.waitKey(2)
+            if cv2.waitKey(2) & 0xFF == ord('q'):
+                break
 
-        cv2.namedWindow('Registered', cv2.WINDOW_NORMAL)
-        cv2.imshow('Registered', im1Reg)
-        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
+    def alignVid(self):
+        print("Registering",self.frame_count," frames...")
+        for frame in range(self.frame_count):
+            imReg, h = self.alignImages(self.vid[frame,:,:],self.vid[1,:,:])
+            self.regvid[frame,:,:] = imReg
+            self.h[frame,:,:] = h
 
+            print(frame)
 
     def alignImages(self,im1,im2):
         # Convert images to grayscale
@@ -62,7 +94,7 @@ class IMregister(object):
 
         # Draw top matches
         imMatches = cv2.drawMatches(im1, keypoints1, im2, keypoints2, matches, None)
-        cv2.imwrite("matches.jpg", imMatches)
+        # cv2.imwrite("matches.jpg", imMatches)
 
         # Extract location of good matches
         points1 = np.zeros((len(matches), 2), dtype=np.float32)
@@ -76,17 +108,22 @@ class IMregister(object):
         h, mask = cv2.findHomography(points1, points2, cv2.RANSAC)
 
         # Use homography
-        height, width, channels = im2.shape
+        height, width = im2.shape
         im1Reg = cv2.warpPerspective(im1, h, (width, height))
 
         return im1Reg, h
 
     def ReadVid(self):
         cap = cv2.VideoCapture(self.vidpath)
-        frameCount = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        frameWidth = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        frameHeight = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        self.vid = np.empty((frameCount, frameHeight, frameWidth), np.dtype('uint8'))
+        #frameCount = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        #frameWidth = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        #frameHeight = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+        self.frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        self.frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        self.frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+        self.vid = np.empty((self.frame_count, self.frame_height, self.frame_width), np.dtype('uint8'))
         idx = 0
         while cap.isOpened():
             ret, frame = cap.read()
@@ -105,14 +142,17 @@ class IMregister(object):
         cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    # vidpath_1 = "C:\Users/boc5244\Documents/temp/test.mat"
-    # vidpath_1 = "C:\Users/boc5244\Documents/temp/fly_1_trial_2_CW.mat"
-    # vidpath_1 = "C:\Users/boc5244\Documents/temp\RegVid.MOV"
-    vidname_1 = "vidData"
-    root = "C:\Users/boc5244\Documents/temp"
+    from filemanager import FileManager
+
+    vidname_1 = "viddata"
+    root = "Q:\Box Sync"
     FileSelect = FileManager()  # create FileManager instance
     FileSelect.Select(root)  # open file selection GUI in root folder
 
     test = IMregister(FileSelect.files[0],vidname_1)
+
+    savepath = "Q:\Box Sync\Research"
+    fs_1 = 60
+    test.saveVid(savepath,fs_1)
 
     print('DONE')
