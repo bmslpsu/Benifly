@@ -1,5 +1,5 @@
 
-import os
+import os, re
 import Tkinter
 import tkFileDialog as filedialog
 from operator import itemgetter
@@ -24,7 +24,7 @@ class FileManager:
             ("mov files", '*.mov')))
 
         self.files = list(self.files) # convert to list
-        self.files.sort() # sort files alphabetically
+        self.files.sort(key=self.natural_keys) # sort files
         self.nfile = len(self.files)
 
         pathfile        = map(os.path.split, self.files)
@@ -43,7 +43,15 @@ class FileManager:
         if ext[0] is not None:
             self.targetfile = [i + j for i, j in zip(self.targetfile, self.targetext)] # add extension to full file path if specified
 
+    def atof(self,text):
+        try:
+            retval = float(text)
+        except ValueError:
+            retval = text
+        return retval
 
+    def natural_keys(self,text):
+        return [ self.atof(c) for c in re.split(r'[+-]?([0-9]+(?:[.][0-9]*)?|[.][0-9]+)', text) ]
 
 if __name__ == '__main__':
     root = 'H:\EXPERIMENTS\Experiment_SOS_v2'  # folder with MATLAB video files

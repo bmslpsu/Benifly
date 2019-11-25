@@ -1155,14 +1155,18 @@ class MainWindow():
     def loopMat(self, fullfile, vidname):
         self.vidfile = FileImport()
         self.vidfile.get_matdata(fullfile, vidname)
-        while True:
+        ex = True
+        while ex:
             for frame in range(self.vidfile.n_frame):
                 data = self.vidfile.vid[frame,:,:].T
                 self.image_callback(data)
                 self.process_image()
 
-                #if cv2.waitKey(1) & 0xFF == ord('w'):
-                    #raw_input("Press Enter to continue...")
+                if cv2.waitKey(1) & 0xFF == ord('w'):
+                    ex = False
+
+                if not ex:
+                    break
 
     def runMat(self, fullfile, vidname, targetdir):
         self.vidfile = FileImport()

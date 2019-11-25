@@ -1,19 +1,29 @@
 
-import time
+import time , os , sys
 from Benifly import MainWindow
 from filemanager import FileManager
 
 # USER: set these variables
 #---------------------------------------------------------------------------------------
-root = 'H:\EXPERIMENTS\Experiment_SOS\Vid'  # folder with video files
-targetdir = 'C:\Users/boc5244\Documents/temp\out' # where to save output data & video
-vidname = 'vidData' # name of video variable in MATLAB .mat file (does not apply to video other formats)
+root = 'H:\EXPERIMENTS\Experiment_Asymmetry_Control_Verification\HighContrast/22.5\Vid'  # folder with video files
+targetdir = os.path.join(root,'tracked') # where to save output data & video
+vidname = 'vidData' # name of video variable in MATLAB .mat file (does not apply to videos of other formats)
+
+# root = 'H:\EXPERIMENTS\Experiment_Sinusoid/15\Vid'  # folder with video files
+# targetdir = os.path.join(root,'Benifly') # where to save output data & video
+# vidname = 'vidData' # name of video variable in MATLAB .mat file (does not apply to videos of other formats)
 #---------------------------------------------------------------------------------------
 
 FileSelect = FileManager() # create FileManager instance
 FileSelect.Select(root) # open file selection GUI in root folder
 
 Benifly = MainWindow() # create Benifly instance
+
+# Loop files to set auto-zero ===> press "w" when done with file
+Benifly.loopMat(FileSelect.files[0], vidname)
+Benifly.loopMat(FileSelect.files[1], vidname)
+Benifly.loopMat(FileSelect.files[2], vidname)
+Benifly.loopMat(FileSelect.files[3], vidname)
 
 print('Files to track:')
 print('-------------------------------------')
@@ -25,11 +35,10 @@ print('-------------------------------------\n')
 for f in FileSelect.files:
     print 'Tracking: ' , f
 
-    # USER: uncomment method to use
-    #---------------------------------------------------
-    Benifly.loopMat(f, vidname)
+    # USER: uncomment method to use    #---------------------------------------------------
+    # Benifly.loopMat(f, vidname)
     # Benifly.loopVid(f)
-    # Benifly.runMat(f, vidname, targetdir)
+    Benifly.runMat(f, vidname, targetdir)
     # Benifly.runVid(f, targetdir)
     # Benifly.loopLive()
     #----------------------------------------------------
@@ -37,3 +46,4 @@ for f in FileSelect.files:
     time.sleep(1)
 
 print('----------DONE----------')
+sys.exit()

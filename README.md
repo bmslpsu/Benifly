@@ -25,7 +25,7 @@ Users should start with the script `BatchBenifly.py`. This constructs a *Benifly
 The user can set the following variables:
  * `root`: directory where video files are located
  * `targetdir`: directory to save output
- * `vidname`: the name of the video data variable in the .mat file (necessary for MATLAB videos only)
+ * `vidname`: name of the video data variable in the .mat file (necessary for MATLAB videos only). The video should be stored as a 3D greyscale video matrix.
  
  It is recommended that `root` & `targetdir` be different directories to avoid possible naming conflicts.
  
@@ -43,7 +43,7 @@ The user can set the following variables:
  Works just like like `loopMat()`, but takes a video format file (`.avi`, .`mp4`, `.mov`, etc.) instead of a `.mat` file.
  
   #### 4. `runVid(root, file, vidname, targetdir)`
- Works just like like `runMat()`, but takes a video format file (`.avi`, .`mp4`, `.mov`, etc.) instead of a `.mat` file.
+ Works just like like `runMat()`, but takes a video format file instead of a `.mat` file.
  
   #### 5. `loopLive()`
  Works just like `loopMat()` but reads in an image stream from the first default usb camera device. Not very useful right now, but can be used for debugging if video files are not loading.
@@ -56,7 +56,7 @@ The user can set the following variables:
  For both output files, `filename`  will be the same as the name of the video file fed to *Benifly*.
  
  ### Setting & Saving Parameters
- The `params.json` file in the *Benifly* root directory stores all startup information for the GUI and tracking methods. Everytime a parameter is changed in the Knefly GUI (such as a mask location), this information will be dumped to the file. The user can also edit this file to change parameters before startup. `.json` files are not especially readable/editable in text format, so  a `.json` [viewer](https://codebeautify.org/online-json-editor) may me helpful. If *Benifly* cannot find this file on startup, then default paramters will be used and a new `params.json` file will be created. 
+ The `params.json` file in the *Benifly* root directory stores all startup information for the GUI and tracking methods. Everytime a parameter is changed in the Kinefly GUI (such as a mask location), this information will be dumped to the file. The user can also edit this file to change parameters before startup. `.json` files are not especially readable/editable in text format, so  a `.json` [viewer](https://codebeautify.org/online-json-editor) may me helpful. If *Benifly* cannot find this file on startup, then default paramters will be used and a new `params.json` file will be created. 
  
  A `params.json` file is included in the root folder for reference, but it is recommended that users delete this and create their own from defaults. This will prevent a few possible issues.
  
