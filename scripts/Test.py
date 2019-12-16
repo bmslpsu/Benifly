@@ -10,7 +10,11 @@ targetdir = os.path.join(root,'tracked') # where to save output data & video
 vidname = 'vidData' # name of video variable in MATLAB .mat file (does not apply to videos of other formats)
 
 # root = 'H:\EXPERIMENTS\Experiment_Sinusoid/15\Vid'  # folder with video files
-# targetdir = os.path.join(root,'Benifly') # where to save output data & video
+# targetdir = os.path.join(root,'Benifly','new') # where to save output data & video
+# vidname = 'vidData' # name of video variable in MATLAB .mat file (does not apply to videos of other formats)
+
+# root = 'H:\EXPERIMENTS\Experiment_SOS_v2'  # folder with video files
+# targetdir = os.path.join(root,'Benifly','new') # where to save output data & video
 # vidname = 'vidData' # name of video variable in MATLAB .mat file (does not apply to videos of other formats)
 #---------------------------------------------------------------------------------------
 
@@ -22,8 +26,8 @@ Benifly = MainWindow() # create Benifly instance
 # Loop files to set auto-zero ===> press "w" when done with file
 Benifly.loopMat(FileSelect.files[0], vidname)
 Benifly.loopMat(FileSelect.files[1], vidname)
-Benifly.loopMat(FileSelect.files[2], vidname)
-Benifly.loopMat(FileSelect.files[3], vidname)
+Benifly.loopMat(FileSelect.files[12], vidname)
+Benifly.loopMat(FileSelect.files[34], vidname)
 
 print('Files to track:')
 print('-------------------------------------')
