@@ -1,22 +1,15 @@
 
-import time , os , sys
+import time , os
 from Benifly import MainWindow
 from filemanager import FileManager
 
-# USER: set these variables
-#---------------------------------------------------------------------------------------
-root = 'H:\EXPERIMENTS\Experiment_Asymmetry_Control_Verification\HighContrast/22.5\Vid'  # folder with video files
+root = 'H:\EXPERIMENTS\MAGNO\Experiment_SOS/registered' # folder with video files
 targetdir = os.path.join(root,'tracked') # where to save output data & video
-vidname = 'vidData' # name of video variable in MATLAB .mat file (does not apply to videos of other formats)
-#---------------------------------------------------------------------------------------
+vidname = 'regvid' # name of video variable in MATLAB .mat file (does not apply to videos of other formats)
+params = 'C:\Users/boc5244\PycharmProjects\RunBenifly\params_test.json'
 
 FileSelect = FileManager() # create FileManager instance
 FileSelect.Select(root) # open file selection GUI in root folder
-
-Benifly = MainWindow() # create Benifly instance
-
-# Loop files to set auto-zero ===> press "w" when done with file
-Benifly.loopMat(FileSelect.files[0], vidname)
 
 print('Files to track:')
 print('-------------------------------------')
@@ -24,19 +17,15 @@ for f in FileSelect.basename:
     print(f)
 print('-------------------------------------\n')
 
+Benifly = MainWindow(params)  # create Benifly instance
+
 # Loop through and track all files
 for f in FileSelect.files:
-    print 'Tracking: ' , f
+    print 'Tracking: ', f
 
-    # USER: uncomment method to use    #---------------------------------------------------
-    # Benifly.loopMat(f, vidname)
-    # Benifly.loopVid(f)
-    Benifly.runMat(f, vidname, targetdir)
-    # Benifly.runVid(f, targetdir)
-    # Benifly.loopLive()
-    #----------------------------------------------------
+    Benifly.loopMat(f, vidname) # click done when finished
+    # Benifly.runMat(f, vidname, targetdir) # run tracking
 
     time.sleep(1)
 
 print('----------DONE----------')
-sys.exit()

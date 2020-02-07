@@ -22,7 +22,6 @@ from fileimport import FileImport
 from MsgFlyState import Header
 
 
-
 ###############################################################################
 ###############################################################################
 # class MainWindow()
@@ -31,10 +30,16 @@ from MsgFlyState import Header
 # process them using the Fly class, and then output the results.
 #
 class MainWindow():
-    def __init__(self):
+    def __init__(self,filenameParams=False):
         # Initialize
         self.nodename  = MainWindow.__module__
         self.mainroot = os.path.dirname(os.path.dirname(imp.find_module(self.nodename)[1]))
+
+        # If a params.json file isn't specified, lets use the default one in the root folder
+        self.filenameParams = filenameParams
+        if not self.filenameParams:
+            print('Using default parameter file location ...')
+            self.filenameParams = os.path.join(self.mainroot, 'params.json')
 
         print('\n**************************************************************************')
         print('         ' + self.nodename + ': Tethered Insect Kinematics Analyzer')
@@ -138,11 +143,12 @@ class MainWindow():
 
         # Try to get parameters from file
         try:
-            with open(os.path.join(self.mainroot,"params.json")) as json_file:
+            with open(self.filenameParams) as json_file:
+                print 'Loading parameters from file: ', self.filenameParams
                 self.params = json.load(json_file)
-                print('Loading parameters from file ...')
         except IOError:
             print('No saved parameters file ... using defaults')
+
 
         # Set parameters from file if we have them
         SetDict().set_dict_with_preserve(self.params, defaults)
@@ -227,6 +233,10 @@ class MainWindow():
         rosimg = imgInitial
         self.image_callback(rosimg)
         self.bValidImage = False
+
+        self.vidfile = ''   # video file name
+        self.done = False   # done tracking
+        self.pause = False  # pause video
 
         print(self.nodename + ' Initalized \n')
 
@@ -360,6 +370,28 @@ class MainWindow():
                         state=self.params['gui']['windows'])
         self.wrap_button(btn, shape)
         self.buttons.append(btn)
+
+        if self.params['gui']['head']['track'] and self.params['head']['tracker']=='area':
+            x = btn.right + 1
+            y = btn.top + 1
+            btn = ui.Button(pt=[x, y], scale=self.scale, type='checkbox', name='head_autozero', text='head_autozero',
+                            state=self.params['head']['autozero'])
+            self.wrap_button(btn, shape)
+            self.buttons.append(btn)
+
+        x = btn.right + 1
+        y = btn.top + 1
+        btn = ui.Button(pt=[x, y], scale=self.scale, type='checkbox', name='pause', text='pause',
+                        state=self.pause)
+        self.wrap_button(btn, shape)
+        self.buttons.append(btn)
+
+        x = btn.right + 1
+        y = btn.top + 1
+        btn = ui.Button(pt=[x, y], scale=self.scale, type='pushbutton', name='done', text='done')
+        self.wrap_button(btn, shape)
+        self.buttons.append(btn)
+
 
         self.yToolbar = btn.bottom + 1
 
@@ -1044,6 +1076,9 @@ class MainWindow():
                 elif (self.nameSelected == self.nameSelectedNow == 'exit'):
                     sys.exit('Exit ' + self.nodename + ' ...')
 
+                elif (self.nameSelected == self.nameSelectedNow == 'done'):
+                    self.done = True
+
 
             elif (self.uiSelected == 'checkbox'):
                 if (self.nameSelected == self.nameSelectedNow):
@@ -1057,7 +1092,7 @@ class MainWindow():
                 elif (self.nameSelected == self.nameSelectedNow == 'subtract_lr'):
                     if (not self.bHaveBackground):
                         self.buttons[iButtonSelected].state = False
-                        # rospy.logwarn('No background image.  Cannot use background subtraction for left/right.')
+                        print('No background image.  Cannot use background subtraction for left/right.')
 
                     self.params['gui']['left']['subtract_bg'] = self.buttons[iButtonSelected].state
                     self.params['gui']['right']['subtract_bg'] = self.buttons[iButtonSelected].state
@@ -1065,21 +1100,21 @@ class MainWindow():
                 elif (self.nameSelected == self.nameSelectedNow == 'subtract_aux'):
                     if (not self.bHaveBackground):
                         self.buttons[iButtonSelected].state = False
-                        # rospy.logwarn('No background image.  Cannot use background subtraction for aux.')
+                        print('No background image.  Cannot use background subtraction for aux.')
 
                     self.params['gui']['aux']['subtract_bg'] = self.buttons[iButtonSelected].state
 
                 elif (self.nameSelected == self.nameSelectedNow == 'subtract_head'):
                     if (not self.bHaveBackground):
                         self.buttons[iButtonSelected].state = False
-                        # rospy.logwarn('No background image.  Cannot use background subtraction for head.')
+                        print('No background image.  Cannot use background subtraction for head.')
 
                     self.params['gui']['head']['subtract_bg'] = self.buttons[iButtonSelected].state
 
                 elif (self.nameSelected == self.nameSelectedNow == 'subtract_abdomen'):
                     if (not self.bHaveBackground):
                         self.buttons[iButtonSelected].state = False
-                        # rospy.logwarn('No background image.  Cannot use background subtraction for abdomen.')
+                        print('No background image.  Cannot use background subtraction for abdomen.')
 
                     self.params['gui']['abdomen']['subtract_bg'] = self.buttons[iButtonSelected].state
 
@@ -1116,12 +1151,18 @@ class MainWindow():
                 elif (self.nameSelected == self.nameSelectedNow == 'windows'):
                     self.params['gui']['windows'] = self.buttons[iButtonSelected].state
 
+                elif (self.nameSelected == self.nameSelectedNow == 'head_autozero'):
+                    self.fly.head.params['head']['autozero'] = self.buttons[iButtonSelected].state
+
+                elif (self.nameSelected == self.nameSelectedNow == 'pause'):
+                    self.pause = self.buttons[iButtonSelected].state
+
             if (self.uiSelected in ['handle', 'checkbox']):
                 self.fly.set_params(self.scale_params(self.params, self.scale))
                 self.fly.create_masks(self.shapeImage)
 
             with self.lockParams:
-                with open(self.mainroot + "\params.json", 'w') as outfile:
+                with open(self.filenameParams, 'w') as outfile:
                     json.dump(self.params, outfile)
 
             self.bMousing = False
@@ -1155,17 +1196,19 @@ class MainWindow():
     def loopMat(self, fullfile, vidname):
         self.vidfile = FileImport()
         self.vidfile.get_matdata(fullfile, vidname)
-        ex = True
-        while ex:
-            for frame in range(self.vidfile.n_frame):
-                data = self.vidfile.vid[frame,:,:].T
-                self.image_callback(data)
+        while not self.done:
+            frame = 0
+            while frame<self.vidfile.n_frame:
+                viddata = self.vidfile.vid[frame, :, :].T
+                self.image_callback(viddata)
                 self.process_image()
 
-                if cv2.waitKey(1) & 0xFF == ord('w'):
-                    ex = False
+                if not self.pause:
+                    frame = frame + 1
+                else:
+                    pass
 
-                if not ex:
+                if self.done:
                     break
 
     def runMat(self, fullfile, vidname, targetdir):

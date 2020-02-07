@@ -5,9 +5,9 @@ from filemanager import FileManager
 
 # USER: set these variables
 #---------------------------------------------------------------------------------------
-root = 'H:\EXPERIMENTS\Experiment_Asymmetry_Control_Verification\HighContrast/22.5\Vid'  # folder with video files
+root = 'H:\EXPERIMENTS\MAGNO\Experiment_SOS/registered'  # folder with video files
 targetdir = os.path.join(root,'tracked') # where to save output data & video
-vidname = 'vidData' # name of video variable in MATLAB .mat file (does not apply to videos of other formats)
+vidname = 'regvid' # name of video variable in MATLAB .mat file (does not apply to videos of other formats)
 
 # root = 'H:\EXPERIMENTS\Experiment_Sinusoid/15\Vid'  # folder with video files
 # targetdir = os.path.join(root,'Benifly','new') # where to save output data & video
@@ -25,9 +25,9 @@ Benifly = MainWindow() # create Benifly instance
 
 # Loop files to set auto-zero ===> press "w" when done with file
 Benifly.loopMat(FileSelect.files[0], vidname)
-Benifly.loopMat(FileSelect.files[1], vidname)
-Benifly.loopMat(FileSelect.files[12], vidname)
-Benifly.loopMat(FileSelect.files[34], vidname)
+# Benifly.loopMat(FileSelect.files[1], vidname)
+# Benifly.loopMat(FileSelect.files[12], vidname)
+# Benifly.loopMat(FileSelect.files[34], vidname)
 
 print('Files to track:')
 print('-------------------------------------')
@@ -39,7 +39,8 @@ print('-------------------------------------\n')
 for f in FileSelect.files:
     print 'Tracking: ' , f
 
-    # USER: uncomment method to use    #---------------------------------------------------
+    # USER: uncomment method to use
+    # #---------------------------------------------------
     # Benifly.loopMat(f, vidname)
     # Benifly.loopVid(f)
     Benifly.runMat(f, vidname, targetdir)

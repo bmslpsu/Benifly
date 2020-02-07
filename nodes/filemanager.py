@@ -53,11 +53,11 @@ class FileManager:
     def natural_keys(self,text):
         return [ self.atof(c) for c in re.split(r'[+-]?([0-9]+(?:[.][0-9]*)?|[.][0-9]+)', text) ]
 
-if __name__ == '__main__':
-    root = 'H:\EXPERIMENTS\Experiment_SOS_v2'  # folder with MATLAB video files
-    targetdir = 'F:/'
-    ext = '.avi'
-
-    main = FileManager()
-    main.Select(root)
-    main.TargetDir(targetdir)
+# if __name__ == '__main__':
+#     root = 'H:\EXPERIMENTS\Experiment_SOS_v2'  # folder with MATLAB video files
+#     targetdir = 'F:/'
+#     ext = '.avi'
+#
+#     main = FileManager()
+#     main.Select(root)
+#     main.TargetDir(targetdir)

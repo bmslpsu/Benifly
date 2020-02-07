@@ -20,17 +20,17 @@ from MsgFlyState import MsgFlyState, MsgState , Header
 class Fly(object):
     def __init__(self, params={}):
         #self.nodename = rospy.get_name().rstrip('/')
-        self.nodename = 'kinefly'
+        self.nodename = 'Benifly'
         EdgeTracker = EdgeTrackerByIntensityProfile
         #EdgeTracker = EdgeTrackerByHoughTransform
 
 
         # Create the body axis tracker.
-        self.axis        = AxisTracker(name='axis',      params=params, color='cyan')
+        self.axis        = AxisTracker(name='axis',      params=params, color='blue')
 
         # Create the head tracker.
         if (params['head']['tracker']=='area'):
-            self.head    = AreaTracker(name='head',      params=params, color='blue',    bEqualizeHist=False)
+            self.head    = AreaTracker(name='head',      params=params, color='cyan',    bEqualizeHist=False)
         elif (params['head']['tracker']=='edge'):
             self.head    = EdgeTracker(name='head',      params=params, color='red',    bEqualizeHist=False)
         elif (params['head']['tracker']=='tip'):
@@ -43,7 +43,7 @@ class Fly(object):
 
         # Create the abdomen tracker.
         if (params['abdomen']['tracker']=='area'):
-            self.abdomen    = AreaTracker(name='abdomen',      params=params, color='blue',    bEqualizeHist=False)
+            self.abdomen    = AreaTracker(name='abdomen',      params=params, color='cyan',    bEqualizeHist=False)
         elif (params['abdomen']['tracker']=='edge'):
             self.abdomen    = EdgeTracker(name='abdomen',      params=params, color='red',    bEqualizeHist=False)
         elif (params['abdomen']['tracker']=='tip'):
@@ -56,7 +56,7 @@ class Fly(object):
 
         # Create the right wing tracker.        
         if (params['right']['tracker']=='area'):
-            self.right    = AreaTracker(name='right',      params=params, color='blue',    bEqualizeHist=False)
+            self.right    = AreaTracker(name='right',      params=params, color='cyan',    bEqualizeHist=False)
         elif (params['right']['tracker']=='edge'):
             self.right    = EdgeTracker(name='right',      params=params, color='red',    bEqualizeHist=False)
         elif (params['right']['tracker']=='tip'):
@@ -69,7 +69,7 @@ class Fly(object):
              
         # Create the left wing tracker.        
         if (params['left']['tracker']=='area'):
-            self.left    = AreaTracker(name='left',      params=params, color='blue',    bEqualizeHist=False)
+            self.left    = AreaTracker(name='left',      params=params, color='cyan',    bEqualizeHist=False)
         elif (params['left']['tracker']=='edge'):
             self.left    = EdgeTracker(name='left',      params=params, color='red',    bEqualizeHist=False)
         elif (params['left']['tracker']=='tip'):

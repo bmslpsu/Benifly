@@ -10,7 +10,7 @@ import numpy as np
 class ImageWindow(object):
     def __init__(self, bEnable, name):
         self.image = None
-        self.shape = (100,100)
+        self.shape = (300,300)
         self.name = name
         self.bEnable = False
         self.set_enable(bEnable)

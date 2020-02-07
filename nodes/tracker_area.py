@@ -147,7 +147,7 @@ class AreaTracker(MotionTrackedBodypartPolar):
                 
                 # Stabilize the expansion.
                 T[0,2] -= rShift * self.cosAngleBody_i
-                T[1,2] -= rShift * self.sinAngleBody_i 
+                T[1,2] -= rShift * self.sinAngleBody_i
                 
                 self.imgStabilized = cv2.warpAffine(self.image, T, size)
                 self.windowStabilized.set_image(self.imgStabilized)
