@@ -69,20 +69,20 @@ class MainWindow():
                     'head': {'tracker': 'area',
                              'autozero': True,  # Automatically figure out where the center of motion is.
                              'threshold': 0.0,
-                             'feathering': 0.25,  # How much to feather the edge pixels for motion tracking by area.
-                             'saturation_correction': True},
+                             'feathering': 0.0,  # How much to feather the edge pixels for motion tracking by area.
+                             'saturation_correction': False},
                     'abdomen': {'tracker': 'tip',
-                                'autozero': True,
+                                'autozero': False,
                                 'threshold': 0.0,
                                 'feathering': 0.25,  # How much to feather the edge pixels for motion tracking by area.
                                 'saturation_correction': True},
                     'left': {'tracker': 'edge',
-                             'autozero': True,
+                             'autozero': False,
                              'threshold': 0.0,
                              'feathering': 0.25,  # How much to feather the edge pixels for motion tracking by area.
                              'saturation_correction': True},
                     'right': {'tracker': 'edge',
-                              'autozero': True,
+                              'autozero': False,
                               'threshold': 0.0,
                               'feathering': 0.25,  # How much to feather the edge pixels for motion tracking by area.
                               'saturation_correction': True},
@@ -1196,6 +1196,7 @@ class MainWindow():
     def loopMat(self, fullfile, vidname):
         self.vidfile = FileImport()
         self.vidfile.get_matdata(fullfile, vidname)
+        self.done = False
         while not self.done:
             frame = 0
             while frame<self.vidfile.n_frame:
@@ -1210,6 +1211,7 @@ class MainWindow():
 
                 if self.done:
                     break
+
 
     def runMat(self, fullfile, vidname, targetdir):
         self.vidfile = FileImport()
