@@ -1212,6 +1212,29 @@ class MainWindow():
                 if self.done:
                     break
 
+    def loopVid(self, fullfile):
+        self.done = False
+        frame = 1
+        while not self.done:
+            cap = cv2.VideoCapture(fullfile)
+            while (cap.isOpened()):
+                if not self.pause:
+                    ret, frame = cap.read()
+                else:
+                    ret = True
+                    pass
+
+                if ret:
+                    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                    self.image_callback(gray)
+                    self.process_image()
+                else:
+                    break
+
+                if self.done:
+                    break
+
+            cap.release()
 
     def runMat(self, fullfile, vidname, targetdir):
         self.vidfile = FileImport()
@@ -1270,19 +1293,6 @@ class MainWindow():
                 vidout.release()
             print("Tracking Complete: %5.3fs elapsed"% (time.time() - start_time) )
 
-    def loopVid(self, fullfile):
-        while (True):
-            cap = cv2.VideoCapture(fullfile)
-            while (cap.isOpened()):
-                ret, frame = cap.read()
-                if ret:
-                    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-                    self.image_callback(gray)
-                    self.process_image()
-                else:
-                    break
-
-            cap.release()
 
     def runVid(self, fullfile, targetdir):
         self.vidfile = FileImport()

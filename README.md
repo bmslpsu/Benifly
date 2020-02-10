@@ -26,6 +26,7 @@ The user can set the following variables:
  * `root`: directory where video files are located
  * `targetdir`: directory to save output
  * `vidname`: name of the video data variable in the .mat file (necessary for MATLAB videos only). The video should be stored as a 3D greyscale video matrix.
+  * `params`: path to parameter file (default in the Benifly root directory)
  
  It is recommended that `root` & `targetdir` be different directories to avoid possible naming conflicts.
  
@@ -56,7 +57,7 @@ The user can set the following variables:
  For both output files, `filename`  will be the same as the name of the video file fed to *Benifly*.
  
  ### Setting & Saving Parameters
- The `params.json` file in the *Benifly* root directory stores all startup information for the GUI and tracking methods. Everytime a parameter is changed in the Kinefly GUI (such as a mask location), this information will be dumped to the file. The user can also edit this file to change parameters before startup. `.json` files are not especially readable/editable in text format, so  a `.json` [viewer](https://codebeautify.org/online-json-editor) may me helpful. If *Benifly* cannot find this file on startup, then default paramters will be used and a new `params.json` file will be created. 
+ The `params.json` file in the *Benifly* root directory stores all startup information for the GUI and tracking methods. Everytime a parameter is changed in the Kinefly GUI (such as a mask location), this information will be dumped to the file. The user can also edit this file to change parameters before startup. `.json` files are not especially readable/editable in text format, so  a `.json` [viewer](https://codebeautify.org/online-json-editor) may me helpful. If *Benifly* cannot find this file on startup, then default paramters will be used and a new `params.json` file will be created. The user can also specify a new location fo the parameter file when creating a *Benifly* instance.
  
  A `params.json` file is included in the root folder for reference, but it is recommended that users delete this and create their own from defaults. This will prevent a few possible issues.
  
@@ -71,7 +72,11 @@ The user can set the following variables:
   * *Kinefly's* data visualization & performance tracking services are currently unavaiable, but this may change in the future.
   * *Kinefly's* LED Panels Control & Voltage Output functionality is not included.
   * *Benifly's* wing-beat-frequency detcector (aux mask) will not return the true WBF becuase the play back rate is presumably not the same as the rate that the video was recorded.
-
+  * *Benifly* includes a few additional buttons
+    * **pause**: pauses tracking (only for `loopMat`, `loopVid` methods)
+    * **done**: exits beifly, but leaves the object intact  (only for `loopMat`, `loopVid` methods)
+    * **head_autozero**: toggles the autozero setting for head tracking
+    
 ## Troubleshooting
 If *Benifly* is returning any errors  similar to  "outside of range", "index", or "size" erros, this is most likely because you have a smaller sized video and the masks are set outside the pixel range. This error can occur in `Kinefly` as well. To solve this, edit the `params.json`: turn tracking off for all body parts & change the positions of the mask points to lie within your pixel range. This may be automated in the future. Alternatively, increasing the `scale_image` parameter can help in dealing with smaller sized videos.
 
