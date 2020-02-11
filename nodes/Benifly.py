@@ -60,6 +60,8 @@ class MainWindow():
                     'image_topic': '/camera/image_raw',
                     'n_queue_images': 2,
                     'use_gui': True,  # You can turn off the GUI to speed the framerate.
+                    'export_vid': True,  # Save tracked video or not
+                    'export_params': True,  # Save parameters used in new folder
                     'scale_image': 1.0,  # Reducing the image scale will speed the framerate.
                     'n_edges_max': 1,  # Max number of edges per wing to detect, subject to threshold.
                     'rc_background': 1000.0,  # Time constant of the moving average background.
@@ -237,6 +239,7 @@ class MainWindow():
         self.vidfile = ''   # video file name
         self.done = False   # done tracking
         self.pause = False  # pause video
+        self.run = False    # run tracking
 
         print(self.nodename + ' Initalized \n')
 
@@ -371,7 +374,7 @@ class MainWindow():
         self.wrap_button(btn, shape)
         self.buttons.append(btn)
 
-        if self.params['gui']['head']['track'] and self.params['head']['tracker']=='area':
+        if self.params['head']['tracker']=='area':
             x = btn.right + 1
             y = btn.top + 1
             btn = ui.Button(pt=[x, y], scale=self.scale, type='checkbox', name='head_autozero', text='head_autozero',
@@ -392,6 +395,11 @@ class MainWindow():
         self.wrap_button(btn, shape)
         self.buttons.append(btn)
 
+        x = btn.right + 1
+        y = btn.top + 1
+        btn = ui.Button(pt=[x, y], scale=self.scale, type='pushbutton', name='run', text='run')
+        self.wrap_button(btn, shape)
+        self.buttons.append(btn)
 
         self.yToolbar = btn.bottom + 1
 
@@ -603,7 +611,6 @@ class MainWindow():
                 self.stop()
 
             if (self.params['use_gui']):
-
                 imgOutput = cv2.cvtColor(self.imgScaled, cv2.COLOR_GRAY2RGB)
                 self.fly.draw(imgOutput)
 
@@ -1079,6 +1086,9 @@ class MainWindow():
                 elif (self.nameSelected == self.nameSelectedNow == 'done'):
                     self.done = True
 
+                elif (self.nameSelected == self.nameSelectedNow == 'run'):
+                    self.run = True
+
 
             elif (self.uiSelected == 'checkbox'):
                 if (self.nameSelected == self.nameSelectedNow):
@@ -1152,7 +1162,8 @@ class MainWindow():
                     self.params['gui']['windows'] = self.buttons[iButtonSelected].state
 
                 elif (self.nameSelected == self.nameSelectedNow == 'head_autozero'):
-                    self.fly.head.params['head']['autozero'] = self.buttons[iButtonSelected].state
+                    if self.params['gui']['head']['track']:
+                        self.fly.head.params['head']['autozero'] = self.buttons[iButtonSelected].state
 
                 elif (self.nameSelected == self.nameSelectedNow == 'pause'):
                     self.pause = self.buttons[iButtonSelected].state
@@ -1193,11 +1204,22 @@ class MainWindow():
                 print('No compatible video device ... exiting')
                 break
 
-    def loopMat(self, fullfile, vidname):
+    def loopMat(self, fullfile, vidname,targetdir=False):
         self.vidfile = FileImport()
         self.vidfile.get_matdata(fullfile, vidname)
         self.done = False
+        self.run = False
+
         while not self.done:
+            if self.run:
+                if not targetdir:
+                    print('Target directory not specified!')
+                    self.run = False
+                else:
+                    print('Tracking ' + fullfile)
+                    self.runMat(fullfile, vidname, targetdir)
+                    break
+
             frame = 0
             while frame<self.vidfile.n_frame:
                 viddata = self.vidfile.vid[frame, :, :].T
@@ -1212,10 +1234,23 @@ class MainWindow():
                 if self.done:
                     break
 
-    def loopVid(self, fullfile):
+                if self.run:
+                    break
+
+    def loopVid(self, fullfile, targetdir=False):
         self.done = False
-        frame = 1
+        self.run = False
+
         while not self.done:
+            if self.run:
+                print('Tracking ' + fullfile)
+                if not targetdir:
+                    raise Exception('target directory not specified')
+                self.runVid(fullfile, targetdir)
+                self.run = False
+                break
+
+            frame = 1
             cap = cv2.VideoCapture(fullfile)
             while (cap.isOpened()):
                 if not self.pause:
@@ -1234,72 +1269,93 @@ class MainWindow():
                 if self.done:
                     break
 
+                if self.run:
+                    break
+
             cap.release()
 
     def runMat(self, fullfile, vidname, targetdir):
+        #  Load video
         self.vidfile = FileImport()
         self.vidfile.get_matdata(fullfile, vidname)
 
+        # Create video & kinematic data paths
         datapath = os.path.join(targetdir, self.vidfile.fname + '.csv')
         vidpath  = os.path.join(targetdir, self.vidfile.fname + '.avi')
+
+        # Open output files
         header = "Frame, Head, LeftWing , RightWing, Abdomen , Aux"
         with open(datapath, 'wb') as f:
-            if self.params['use_gui']:
+            if self.params['use_gui'] and self.params['export_vid']:
                 fourcc = cv2.VideoWriter_fourcc(*'MJPG')
                 vidout = cv2.VideoWriter(vidpath, fourcc, self.params['out_fps'], (self.vidfile.width, self.vidfile.height))
             np.savetxt(f, [], header=header, comments='')
+
+            # Track every frame
             start_time = time.time()
             for frame in range(self.vidfile.n_frame):
-                data = self.vidfile.vid[frame,:,:].T
-                self.image_callback(data)
-                self.process_image()
+                viddata = self.vidfile.vid[frame,:,:].T # get frame
+                self.image_callback(viddata) # input image
+                self.process_image() # track
 
+                # Get states
                 state = np.empty((1,6))
                 state[:] = np.nan
                 state[0, 0] = frame
 
                 try:
-                    state[0,1] = self.fly.head.state.angles[0]
+                    state[0,1] = self.fly.head.state.angles[0] # head angle
                 except IndexError:
                     pass
 
                 try:
-                    state[0,2] = self.fly.left.state.angles[0]
+                    state[0,2] = self.fly.left.state.angles[0]  # left wing angle
                 except IndexError:
                     pass
 
                 try:
-                    state[0,3] = self.fly.right.state.angles[0]
+                    state[0,3] = self.fly.right.state.angles[0] # right wing angle
                 except IndexError:
                     pass
 
                 try:
-                    state[0,4] = self.fly.abdomen.state.angles[0]
+                    state[0,4] = self.fly.abdomen.state.angles[0] # abdomen angle
                 except IndexError:
                     pass
 
                 try:
-                    state[0,5] = self.fly.aux.state.intensity
+                    state[0,5] = self.fly.aux.state.intensity # WBF intensity
                 except IndexError:
                     pass
 
-                np.savetxt(f, state, delimiter=',')
+                np.savetxt(f, state, delimiter=',') # save kinematics
 
-                if self.params['use_gui']:
-                    vidout.write(self.imgOutput)
+                if self.params['use_gui'] and self.params['export_vid']:
+                    vidout.write(self.imgOutput) # save frame
 
             f.close()
-            if self.params['use_gui']:
+            if self.params['use_gui'] and self.params['export_vid']:
                 vidout.release()
+
+            # Save the parameters to the target directory
+            if self.params['export_params']:
+                params_path = os.path.join(targetdir, self.vidfile.fname + '.json')
+                with open(params_path, 'w') as outfile:
+                    json.dump(self.params, outfile)
+
             print("Tracking Complete: %5.3fs elapsed"% (time.time() - start_time) )
 
 
     def runVid(self, fullfile, targetdir):
+        #  Get video file
         self.vidfile = FileImport()
         self.vidfile.get_filedata(fullfile)
 
+        # Create video & kinematic data paths
         datapath = os.path.join(targetdir, self.vidfile.fname + '.csv')
         vidpath = os.path.join(targetdir, self.vidfile.fname + '.avi')
+
+        # Open output files
         header = "Frame, Head, LeftWing , RightWing, Abdomen , Aux"
         with open(datapath, 'wb') as f:
             cap = cv2.VideoCapture(fullfile)
@@ -1309,6 +1365,8 @@ class MainWindow():
                 fourcc = cv2.VideoWriter_fourcc(*'MJPG')
                 vidout = cv2.VideoWriter(vidpath, fourcc, self.params['out_fps'], (frame_width, frame_height))
             np.savetxt(f, [], header=header, comments='')
+
+            # Track every frame
             iCount = 1
             start_time = time.time()
             while (cap.isOpened()):
@@ -1325,42 +1383,50 @@ class MainWindow():
                 state[0, 0] = iCount
 
                 try:
-                    state[0, 1] = self.fly.head.state.angles[0]
+                    state[0,1] = self.fly.head.state.angles[0] # head angle
                 except IndexError:
                     pass
 
                 try:
-                    state[0, 2] = self.fly.left.state.angles[0]
+                    state[0,2] = self.fly.left.state.angles[0]  # left wing angle
                 except IndexError:
                     pass
 
                 try:
-                    state[0, 3] = self.fly.right.state.angles[0]
+                    state[0,3] = self.fly.right.state.angles[0] # right wing angle
                 except IndexError:
                     pass
 
                 try:
-                    state[0, 4] = self.fly.abdomen.state.angles[0]
+                    state[0,4] = self.fly.abdomen.state.angles[0] # abdomen angle
                 except IndexError:
                     pass
 
                 try:
-                    state[0, 5] = self.fly.aux.state.intensity
+                    state[0,5] = self.fly.aux.state.intensity # WBF intensity
                 except IndexError:
                     pass
 
-                np.savetxt(f, state, delimiter=',')
+                np.savetxt(f, state, delimiter=',') # save kinematics
+
                 if self.params['use_gui']:
-                    vidout.write(self.imgOutput)
+                    vidout.write(self.imgOutput) # save frame
 
                 iCount+=1
                 print(iCount)
 
             f.close()
-            if self.params['use_gui']:
+            if self.params['use_gui'] and self.params['export_vid']:
                 vidout.release()
+
             cap.release()
             cv2.destroyAllWindows()
+
+            # Save the parameters to the target directory
+            if self.params['export_params']:
+                params_path = os.path.join(targetdir, self.vidfile.fname + '.json')
+                with open(params_path, 'w') as outfile:
+                    json.dump(self.params, outfile)
 
             print("Tracking Complete: %5.3fs elapsed" % (time.time() - start_time))
 

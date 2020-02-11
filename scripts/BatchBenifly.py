@@ -6,7 +6,7 @@ from filemanager import FileManager
 root = 'H:\EXPERIMENTS\MAGNO\Experiment_SOS/registered' # folder with video files
 targetdir = os.path.join(root,'tracked') # where to save output data & video
 vidname = 'regvid' # name of video variable in MATLAB .mat file (does not apply to videos of other formats)
-params = 'C:\Users/boc5244\PycharmProjects\RunBenifly\params_test.json' # parameter file location
+params = 'C:\Users/boc5244\PycharmProjects\RunBenifly\params_test.json' # params file location
 
 FileSelect = FileManager() # create FileManager instance
 FileSelect.Select(root) # open file selection GUI in root folder

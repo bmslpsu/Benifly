@@ -5,9 +5,9 @@ import numpy as np
 
 from imagewindow import ImageWindow
 import imageprocessing
-from bodypart_motion import  MotionTrackedBodypartPolar
+from bodypart_motion import MotionTrackedBodypartPolar
 
-from MsgFlyState import  MsgState
+from MsgFlyState import MsgState
 
 
 ###############################################################################
@@ -56,7 +56,7 @@ class AreaTracker(MotionTrackedBodypartPolar):
             a = -1 if (self.name=='right') else 1
             self.sense = a*self.senseAxes
         else:
-            self.sense = 1  
+            self.sense = 1
 
 
         self.stateOrigin_p.intensity = 0.0
