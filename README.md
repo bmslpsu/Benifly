@@ -34,38 +34,35 @@ The user can set the following variables:
  Currently, the main class `Benifly.py` has five methods that can be called.
  
  
- #### 1. `loopMat(root, file, vidname)` 
- Will continuously track a MATLAB  `.mat` video in a file located in the `root` with filename `file` until stopped by the user. There is no output, which is useful for setting masks & other parameters before tracking. The input parameter `vidname` must be the MATLAB variable that the video is stored under. Note that the video must be in grayscale form (3D matrix).
+ #### 1. `loopMat(root, file, vidname, targetdir)` 
+ Will continuously track a MATLAB  `.mat` video in a file located in the `root` with filename `file` until stopped by the user. There is no output, which is useful for setting masks & other parameters before tracking. The input parameter `vidname` must be the MATLAB variable that the video is stored under. Note that the video must be in grayscale form (3D matrix). If the `targetdir` parameter in specified, the user can use the `run` button to call `Benifly.runMat()` and save the tracked kinematics.
  
   #### 2. `runMat(root, file, vidname, targetdir)`
  Works just like like `loopMat()`, but will track a video stored in a `.mat` file **and** output data to the `targetdir`(tracking only runs once & is no longer continuous).
   
-  #### 3. `loopVid(root, file)`
+  #### 3. `loopVid(root, file, targetdir)`
  Works just like like `loopMat()`, but takes a video format file (`.avi`, .`mp4`, `.mov`, etc.) instead of a `.mat` file.
  
   #### 4. `runVid(root, file, vidname, targetdir)`
  Works just like like `runMat()`, but takes a video format file instead of a `.mat` file.
  
   #### 5. `loopLive()`
- Works just like `loopMat()` but reads in an image stream from the first default usb camera device. Not very useful right now, but can be used for debugging if video files are not loading.
+ Works just like `loopMat()` but reads in an image stream from the first default usb webcam device. Not very useful right now, but can be used for debugging if video files are not loading.
  
  ### Output
  *Benifly* methods that save data (`runMat()`,`runVid()`) output two files:
  * `filename.csv`: contains the head, abdomen, aux, and left & right wing angles for all frames of the input video. Outputs that are not set to be tracked default to `nan`. There are other *Benifly* variables that are not currently designed to be saved, such as the radii & gradients for each body part.
- * `filename.avi`: the saved *Binefly* video feed with tracking illustrations (default frame rate is 60Hz)
+ * `filename.avi`: the saved *Binefly* video feed with tracking illustrations (default frame rate is 60Hz).  The parameter, `export_vid` can be set so the tracked video is not saved.
  
  For both output files, `filename`  will be the same as the name of the video file fed to *Benifly*.
  
  ### Setting & Saving Parameters
- The `params.json` file in the *Benifly* root directory stores all startup information for the GUI and tracking methods. Everytime a parameter is changed in the Kinefly GUI (such as a mask location), this information will be dumped to the file. The user can also edit this file to change parameters before startup. `.json` files are not especially readable/editable in text format, so  a `.json` [viewer](https://codebeautify.org/online-json-editor) may me helpful. If *Benifly* cannot find this file on startup, then default paramters will be used and a new `params.json` file will be created. The user can also specify a new location fo the parameter file when creating a *Benifly* instance.
+ The `params.json` file in the *Benifly* root directory stores all startup information for the GUI and tracking methods. Everytime a parameter is changed in the Kinefly GUI (such as a mask location), this information will be dumped to this file. The user can also edit this file to change parameters before startup. `.json` files are not especially readable/editable in text format, so  a `.json` [viewer](https://codebeautify.org/online-json-editor) may me helpful. If *Benifly* cannot find this file on startup, then default paramters will be used and a new `params.json` file will be created. The user can also specify a new location/filename for the parameter file when creating a *Benifly* instance.
  
  A `params.json` file is included in the root folder for reference, but it is recommended that users delete this and create their own from defaults. This will prevent a few possible issues.
  
  ### Exiting the GUI
  **Do not** use the *X* in the top right corner. This will cause problems. Instead click the the exit button on the top left.
- 
- ### General Notes
-  The paramter `output_fps` sets the frames per second of the output video (default=60).
  
  ## Benifly vs Kinefly
   * *Kinefly* ROS commands (help, gui_on, gui_off, exit) are not functional.
@@ -75,7 +72,11 @@ The user can set the following variables:
   * *Benifly* includes a few additional buttons
     * **pause**: pauses tracking (only for `loopMat`, `loopVid` methods)
     * **done**: exits beifly, but leaves the object intact  (only for `loopMat`, `loopVid` methods)
+    * **run**: stops the loop & calls a `.run...` method to save tracked data (only for `loopMat`, `loopVid` methods)
     * **head_autozero**: toggles the autozero setting for head tracking
+  
+ ### General Notes
+The parameter `output_fps` sets the frames per second of the output video (default=60).
     
 ## Troubleshooting
 If *Benifly* is returning any errors  similar to  "outside of range", "index", or "size" erros, this is most likely because you have a smaller sized video and the masks are set outside the pixel range. This error can occur in `Kinefly` as well. To solve this, edit the `params.json`: turn tracking off for all body parts & change the positions of the mask points to lie within your pixel range. This may be automated in the future. Alternatively, increasing the `scale_image` parameter can help in dealing with smaller sized videos.
