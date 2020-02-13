@@ -3,8 +3,8 @@ import time , os
 from Benifly import MainWindow
 from filemanager import FileManager
 
-root = 'H:\EXPERIMENTS\MAGNO\Experiment_SOS/registered' # folder with video files
-targetdir = os.path.join(root,'tracked') # where to save output data & video
+root = 'E:\Experiment_SOS_v1/registered' # folder with video files
+targetdir = os.path.join(root,'tracked_headwing') # where to save output data & video
 vidname = 'regvid' # name of video variable in MATLAB .mat file (does not apply to videos of other formats)
 params = 'C:\Users/boc5244\PycharmProjects\RunBenifly\params_test.json' # params file location
 
@@ -17,7 +17,7 @@ for f in FileSelect.basename:
     print(f)
 print('-------------------------------------\n')
 
-Benifly = MainWindow(params)  # create Benifly instance
+Benifly = MainWindow()  # create Benifly instance
 
 # Loop through and track all files
 for f in FileSelect.files:
