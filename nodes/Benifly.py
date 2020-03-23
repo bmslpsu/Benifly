@@ -1221,7 +1221,7 @@ class MainWindow():
                     break
 
             frame = 0
-            while frame<self.vidfile.n_frame:
+            while frame < self.vidfile.n_frame:
                 viddata = self.vidfile.vid[frame, :, :].T
                 self.image_callback(viddata)
                 self.process_image()
