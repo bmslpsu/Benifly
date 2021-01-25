@@ -34,7 +34,7 @@ class EdgeDetectorByIntensityProfile(object):
         axis = 0
         intensitiesRaw = np.sum(image, axis).astype(np.float32)
         intensitiesRaw /= (255.0*image.shape[axis]) # Put into range [0,1]
-        self.intensities = intensitiesRaw#filter_median(intensitiesRaw, q=1)
+        self.intensities = intensitiesRaw #filter_median(intensitiesRaw, q=1)
         
         # Compute the intensity gradient. 
         n = 2

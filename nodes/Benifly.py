@@ -9,6 +9,7 @@ import threading
 import time
 import json
 import imp
+#from  scipy import signal, ndimage
 
 import cv2
 import numpy as np
@@ -58,7 +59,7 @@ class MainWindow():
         self.params = {}
         defaults = {'filenameBackground': self.background,
                     'image_topic': '/camera/image_raw',
-                    'n_queue_images': 2,
+                    'n_queue_images': 1,
                     'use_gui': True,  # You can turn off the GUI to speed the framerate.
                     'export_vid': True,  # Save tracked video or not
                     'export_params': True,  # Save parameters used in new folder
@@ -151,10 +152,12 @@ class MainWindow():
         except IOError:
             print('No saved parameters file ... using defaults')
 
-
         # Set parameters from file if we have them
         SetDict().set_dict_with_preserve(self.params, defaults)
         self.params = self.legalizeParams(self.params)
+
+        # Make sure image que is 1 for now
+        self.params['n_que_images'] = 1
 
         self.scale = self.params['scale_image']
         self.bMousing = False
@@ -213,6 +216,7 @@ class MainWindow():
         self.h_gap = int(5 * self.scale)
         self.w_gap = int(10 * self.scale)
         self.scaleText = 0.4 * self.scale
+        #self.scale_button = 0.4*self.scale
         #self.fontface = cv2.FONT_HERSHEY_SIMPLEX
         self.fontface = cv2.FONT_HERSHEY_DUPLEX
         self.buttons = None
@@ -1210,6 +1214,8 @@ class MainWindow():
         self.done = False
         self.run = False
 
+        #self.vidfile.vid = ndimage.median_filter(self.vidfile.vid, size=[7, 7, 7])
+
         while not self.done:
             if self.run:
                 if not targetdir:
@@ -1297,6 +1303,9 @@ class MainWindow():
                 viddata = self.vidfile.vid[frame,:,:].T # get frame
                 self.image_callback(viddata) # input image
                 self.process_image() # track
+
+                #cv2.imshow('test', viddata)
+                #cv2.waitKey(1)
 
                 # Get states
                 state = np.empty((1,6))

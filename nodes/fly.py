@@ -7,6 +7,7 @@ from imagewindow import ImageWindow
 from tracker_axis import AxisTracker
 from tracker_area import AreaTracker
 from tracker_edge import EdgeTrackerByIntensityProfile, EdgeTrackerByHoughTransform
+from tracker_edge_custom import EdgeTrackerByIntensityProfileCustom
 from tracker_tip import TipTracker
 from tracker_intensity import IntensityTracker
 import ui
@@ -23,6 +24,7 @@ class Fly(object):
         self.nodename = 'Benifly'
         EdgeTracker = EdgeTrackerByIntensityProfile
         #EdgeTracker = EdgeTrackerByHoughTransform
+        #EdgeTracker = EdgeTrackerByIntensityProfileCustom
 
 
         # Create the body axis tracker.
@@ -30,7 +32,7 @@ class Fly(object):
 
         # Create the head tracker.
         if (params['head']['tracker']=='area'):
-            self.head    = AreaTracker(name='head',      params=params, color='cyan',    bEqualizeHist=False)
+            self.head    = AreaTracker(name='head',      params=params, color='blue',    bEqualizeHist=False)
         elif (params['head']['tracker']=='edge'):
             self.head    = EdgeTracker(name='head',      params=params, color='red',    bEqualizeHist=False)
         elif (params['head']['tracker']=='tip'):

@@ -166,7 +166,7 @@ class MotionTrackedBodypart(object):
                                           np.array([self.params['gui']['head']['hinge']['x'], self.params['gui']['head']['hinge']['y']]))
         #angleBody_i  = (angle_i + np.pi) % (2.0*np.pi) - np.pi
         angleBody_i  = float(angle_i)
-        return angleBody_i 
+        return angleBody_i
         
                 
     # create_mask()

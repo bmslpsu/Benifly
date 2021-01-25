@@ -1,8 +1,9 @@
 %% Plot Benifly Output
 clear;close all;clc
-root = 'C:\Users\boc5244\Documents\temp\out';
+root = 'H:\EXPERIMENTS\RIGID\Experiment_Ramp_30_HeadFixed\tracked_wing';
 
 [FILE,PATH] = uigetfile({'*.csv'},'Select Benifly output .csv', root, 'MultiSelect','on');
+FILE = cellstr(FILE);
 
 FIG = figure (1) ; clf
 FIG.Color = 'w';

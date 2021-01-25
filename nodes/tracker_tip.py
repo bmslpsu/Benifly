@@ -59,6 +59,9 @@ class TipDetector(object):
         # Find the brightest pixel on the row.
         if (yTip is not None):
             xTip = img[yTip,:].argmax()
+            #nPoint  = img.shape[axis]
+            #xPoints = np.argpartition(img[yTip, :], -nPoint)[-nPoint:]
+            #xTip = np.median(xPoints)
         else:
             xTip = None
         
